@@ -68,10 +68,14 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Enable squash auto-merge for the checked head
+      - name: Enable squash auto-merge for the checked head and delete the branch
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: gh pr merge "$PR_URL" --auto --squash --match-head-commit "$PR_HEAD_SHA"
+        # GitHub Actionsがマージするとリポジトリ設定の自動削除が効かないため、--delete-branchで消す。
+        # --repoを明示すると、checkoutしていないランナーでローカルブランチを探さず、リモートだけ削除する。
+        run: >-
+          gh pr merge "$PR_URL" --repo "$GH_REPO" --auto --squash
+          --match-head-commit "$PR_HEAD_SHA" --delete-branch
