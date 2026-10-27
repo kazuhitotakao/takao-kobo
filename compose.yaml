@@ -6,9 +6,15 @@ services:
 
     working_dir: /app
 
+    environment:
+      CLAUDE_CONFIG_DIR: /root/.claude
+
     volumes:
       - .:/app
       - node_modules:/app/node_modules
+      - gh_config:/root/.config/gh
+      - codex_config:/root/.codex
+      - claude_config:/root/.claude
 
     ports:
       - "3000:3000"
@@ -17,3 +23,6 @@ services:
 
 volumes:
   node_modules:
+  gh_config:
+  codex_config:
+  claude_config:

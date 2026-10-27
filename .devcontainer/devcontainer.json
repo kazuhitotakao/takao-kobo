@@ -4,13 +4,30 @@
   "service": "app",
   "workspaceFolder": "/app",
   "shutdownAction": "stopCompose",
+  "overrideCommand": false,
+  "remoteUser": "root",
+  "postStartCommand": "if gh auth status --hostname github.com >/dev/null 2>&1; then gh auth setup-git; fi",
   "containerEnv": {
     "LANG": "C.UTF-8",
     "LC_ALL": "C.UTF-8"
   },
   "customizations": {
     "vscode": {
-      "extensions": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss", "esbenp.prettier-vscode"]
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "openai.chatgpt",
+        "anthropic.claude-code"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "Bash",
+        "terminal.integrated.profiles.linux": {
+          "Bash": {
+            "path": "/bin/bash"
+          }
+        }
+      }
     }
   }
 }

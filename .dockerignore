@@ -4,3 +4,4 @@ out
 .git
 .env.local
 .env.*.local
+.env*
