@@ -1,0 +1,16 @@
+{
+  "name": "Takao Kobo",
+  "dockerComposeFile": "../compose.yaml",
+  "service": "app",
+  "workspaceFolder": "/app",
+  "shutdownAction": "stopCompose",
+  "containerEnv": {
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss", "esbenp.prettier-vscode"]
+    }
+  }
+}
