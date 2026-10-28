@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
+import { BackLink } from '@/components/back-link';
 import { ExternalLink } from '@/components/external-link';
 import { SubPage } from '@/components/sub-page';
 import { getWork, getWorks, parseTechnologies, splitLines } from '@/lib/works';
@@ -22,24 +22,6 @@ export async function generateMetadata({ params }: PageProps<'/works/[id]'>): Pr
   const { id } = await params;
   const work = await getWork(id);
   return work ? { title: `${work.title} | 髙尾工房`, description: work.summary } : {};
-}
-
-function BackToWorksLink() {
-  return (
-    <Link
-      href="/works"
-      transitionTypes={['nav-back']}
-      className={`group inline-flex items-center gap-1.5 rounded-sm font-semibold text-sky-700 transition-colors hover:text-sky-600 ${focusRingClassName}`}
-    >
-      <span
-        aria-hidden
-        className="transition group-hover:-translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-      >
-        ←
-      </span>
-      Works一覧へ戻る
-    </Link>
-  );
 }
 
 function DetailSection({ title, children }: { title: string; children: ReactNode }) {
@@ -168,7 +150,7 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
       </div>
 
       <div className="mt-16 border-t border-sky-200 pt-8 sm:mt-20">
-        <BackToWorksLink />
+        <BackLink href="/works">Works一覧へ戻る</BackLink>
       </div>
     </article>
   );
@@ -192,7 +174,7 @@ function WorkDetailFallback() {
 export default function WorkDetailPage({ params }: PageProps<'/works/[id]'>) {
   return (
     <SubPage slug="works" isDetail>
-      <BackToWorksLink />
+      <BackLink href="/works">Works一覧へ戻る</BackLink>
       <Suspense fallback={<WorkDetailFallback />}>
         <WorkDetail params={params} />
       </Suspense>
