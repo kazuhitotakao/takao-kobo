@@ -1,0 +1,95 @@
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import { BackLink } from '@/components/back-link';
+import { ShowEndWhenTall } from '@/components/show-end-when-tall';
+import { SubPage } from '@/components/sub-page';
+import { formatDate, getBlogArticle, getBlogArticleIds } from '@/lib/blog';
+
+// 公開時に存在する記事はビルドで静的に生成する。あとから増えた記事は初回アクセス時に生成される。
+// Cache Components では空配列だとビルドエラーになるので、記事が0件のときは存在しない id を渡して 404 にする
+export async function generateStaticParams() {
+  const ids = await getBlogArticleIds();
+  return ids.length > 0 ? ids.map((id) => ({ id })) : [{ id: '__placeholder__' }];
+}
+
+export async function generateMetadata({ params }: PageProps<'/blog/[id]'>): Promise<Metadata> {
+  const { id } = await params;
+  const article = await getBlogArticle(id);
+  return article ? { title: `${article.title} | 髙尾工房`, description: article.summary } : {};
+}
+
+async function BlogArticleDetail({ params }: { params: PageProps<'/blog/[id]'>['params'] }) {
+  const { id } = await params;
+  const article = await getBlogArticle(id);
+  if (!article) {
+    notFound();
+  }
+
+  const publishedAt = article.publishedAt ?? article.createdAt;
+
+  return (
+    <article className="mt-8">
+      {/* 短い記事だと上下の「一覧へ戻る」が並んでしまうので、記事が画面より長いときだけ下にも出す */}
+      <ShowEndWhenTall
+        end={
+          <div className="mt-16 border-t border-sky-200 pt-8 sm:mt-20">
+            <BackLink href="/blog">Blog一覧へ戻る</BackLink>
+          </div>
+        }
+      >
+        <time dateTime={publishedAt} className="text-sm font-medium text-slate-500">
+          {formatDate(publishedAt)}
+        </time>
+        <h1 className="mt-2 text-3xl leading-snug font-bold sm:text-4xl">{article.title}</h1>
+
+        {article.thumbnail && (
+          <div className="relative mt-10 aspect-video overflow-hidden rounded-2xl border border-sky-100 bg-sky-100 shadow-sm">
+            <Image
+              src={article.thumbnail.url}
+              alt={article.thumbnail.alt ?? ''}
+              fill
+              sizes="(min-width: 768px) 720px, 100vw"
+              loading="eager"
+              fetchPriority="high"
+              className="object-cover"
+            />
+          </div>
+        )}
+
+        {/* リッチエディタの HTML は microCMS の管理画面から自分で書いたものだけなので、そのまま描画する */}
+        <div
+          className="rich-text mt-10 leading-loose text-slate-700 sm:mt-12 sm:text-lg"
+          dangerouslySetInnerHTML={{ __html: article.body }}
+        />
+      </ShowEndWhenTall>
+    </article>
+  );
+}
+
+// 事前に生成していない記事を開いたときや、本文の先読みが間に合わなかったときに一瞬見える
+function BlogArticleFallback() {
+  return (
+    <div role="status" className="mt-8 animate-pulse motion-reduce:animate-none">
+      <span className="sr-only">記事を読み込んでいます</span>
+      <div className="h-4 w-28 rounded bg-sky-100" />
+      <div className="mt-4 h-9 w-2/3 rounded-md bg-sky-100" />
+      <div className="mt-12 h-4 w-full rounded bg-sky-100" />
+      <div className="mt-3 h-4 w-full rounded bg-sky-100" />
+      <div className="mt-3 h-4 w-4/5 rounded bg-sky-100" />
+    </div>
+  );
+}
+
+// Header と一覧へ戻るリンクは記事によらないので、params を読む本文だけを Suspense に入れて先に枠を出せるようにする
+export default function BlogArticlePage({ params }: PageProps<'/blog/[id]'>) {
+  return (
+    <SubPage slug="blog" isDetail>
+      <BackLink href="/blog">Blog一覧へ戻る</BackLink>
+      <Suspense fallback={<BlogArticleFallback />}>
+        <BlogArticleDetail params={params} />
+      </Suspense>
+    </SubPage>
+  );
+}
