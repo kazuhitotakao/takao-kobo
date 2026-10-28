@@ -144,7 +144,7 @@ body {
 
 /* トップの About me カード（src/components/home/about-card.tsx）。
    人物をカードの後ろに隠しておき、右へずらしてカードの右端から覗かせる。
-   カードの右には人物が出る分の余白が要る（src/app/page.tsx でスマホはカードの右、PC は列の間をあけている） */
+   カードの右には人物が出る分の余白が要る（src/components/home/home-page.css でスマホはカードの右、PC は列の間をあけている） */
 .about-card {
   --peek-x: 54px;
   --leave-x: 96px;
