@@ -1,39 +1,36 @@
-import { Container } from '@/components/layout/container';
 
-// 小さな人が階段を登っている線画（仮のイラスト）
-function StairClimber({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 72 48"
-      aria-hidden
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2 46 H18 V36 H34 V26 H50 V16 H64" />
-      <circle cx="30" cy="12" r="4" fill="#fff" />
-      <path d="M30 16 L29 26 L25 36 M29 26 L34 22 L37 26 M29.5 19 L34 23 M29.5 19 L25 22" />
-      <path d="M62 16 V4" />
-      <path d="M62 4 L70 6.5 L62 9 Z" fill="#fbbf24" />
-    </svg>
-  );
-}
-
-// トップ専用のヘッダー。メニューは下のカードに任せるので、下層ページの Header と違ってリンクを置かない。
-// 工房名はトップでは今いるページそのものなので、リンクにせずページの見出しにする
+// トップ専用。下層ページの Header・ナビゲーション・ロゴには影響させない。
 export function HomeHeader() {
   return (
-    <header className="border-b-2 border-navy">
-      <Container className="flex items-center justify-between gap-6 py-4">
-        <h1 className="py-1 text-2xl font-bold">髙尾工房</h1>
-        <p className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em] whitespace-nowrap text-navy sm:text-sm">
-          Step by Step
-          <StairClimber className="w-14 sm:w-16" />
-        </p>
-      </Container>
+    <header className="kobo-home__header">
+      <div className="kobo-home__brand" aria-label="髙尾工房">
+        <svg viewBox="0 0 48 45" fill="none" aria-hidden focusable="false">
+          <g stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 21L23 5L43 21M9 18V40H38V18M20 40V29H29V40" />
+            <path d="M18 17H29V24H18ZM35 7V15M40 6L41 10" />
+          </g>
+        </svg>
+        <span><strong>髙尾工房</strong><small>TAKAO KOBO</small></span>
+      </div>
+      <div className="kobo-home__signature" aria-label="step by step、一歩ずつ">
+        <span className="kobo-home__signatureLabel" lang="en">step by step</span>
+        <svg className="kobo-home__staircase" viewBox="0 0 180 112" fill="none" aria-hidden focusable="false">
+          <path d="M8 103H37V84H69V65H101V46H133V27H172V108H8Z" fill="var(--background)" />
+          <g stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 103L37 102V84L69 83V65L101 64V46L133 45V27L172 26" />
+            <path d="M13 108H169" strokeWidth="1.2" opacity=".22" />
+            <g>
+              <path d="M102 11Q103 5 110 6Q118 6 117 14Q116 21 109 21Q102 20 102 13Z" fill="#fff" />
+              <path d="M102 11Q105 4 111 6Q117 6 117 12L110 9L103 13" fill="currentColor" strokeWidth="1.4" />
+              <path d="M108 23L102 29L98 39L108 44L113 33L108 23Z" fill="#fff" />
+              <path d="M107 27L116 30L124 24M102 29L93 28L87 34" />
+              <path d="M100 40L91 49L93 62L101 63M105 42L115 35L123 43L130 44" />
+              <path d="M114 14H117" strokeWidth="1.3" />
+            </g>
+            <path d="M146 12L150 8M157 17L163 16" strokeWidth="1.5" opacity=".6" />
+          </g>
+        </svg>
+      </div>
     </header>
   );
 }

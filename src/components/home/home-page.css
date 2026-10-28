@@ -1,0 +1,107 @@
+/* トップ専用。既存の色変数を使い、globals.css や詳細ページのスタイルには触れない。 */
+.kobo-home__home {
+  flex: 1;
+  overflow-x: clip;
+  background: #fff;
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+.kobo-home__shell { width: min(1120px, calc(100% - 96px)); margin-inline: auto; }
+.kobo-home__header { display: flex; min-height: 166px; align-items: center; justify-content: space-between; gap: 24px; padding-block: 18px; border-bottom: 1px solid #e2e8f0; }
+.kobo-home__brand { display: inline-flex; flex-shrink: 0; align-items: center; gap: 12px; }
+.kobo-home__brand > svg { width: 44px; height: 44px; }
+.kobo-home__brand strong { display: block; font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif; font-size: 25px; font-weight: 800; line-height: 1.35; letter-spacing: .16em; white-space: nowrap; }
+.kobo-home__brand small { display: block; margin-top: 5px; font-size: 9px; font-weight: 700; letter-spacing: .29em; }
+.kobo-home__signature { display: flex; width: 170px; flex-shrink: 0; flex-direction: column; align-items: center; }
+.kobo-home__signatureLabel { align-self: flex-start; margin-left: 10px; font-size: 19px; font-weight: 500; font-style: italic; line-height: 1.5; letter-spacing: .04em; transform: rotate(-4deg); }
+.kobo-home__staircase { display: block; width: 144px; height: auto; margin-top: -4px; }
+.kobo-home__hero { position: relative; padding: 70px 0 54px; text-align: center; }
+.kobo-home__eyebrow { display: flex; align-items: center; justify-content: center; gap: 9px; font-size: 9px; font-weight: 600; letter-spacing: .19em; }
+.kobo-home__eyebrow > span { width: 5px; height: 5px; border-radius: 50%; background: var(--navy); opacity: .6; }
+.kobo-home__heroTitle { margin: 21px 0 16px; font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif; font-size: clamp(30px, 3.7vw, 48px); font-weight: 600; line-height: 1.6; letter-spacing: .13em; }
+.kobo-home__heroTitle > span { opacity: .55; }
+.kobo-home__heroCopy { font-size: 12px; line-height: 2.1; letter-spacing: .14em; color: #64748b; }
+.kobo-home__heroSpark { position: absolute; top: 132px; right: 16%; font-size: 34px; opacity: .45; transform: rotate(16deg); }
+.kobo-home__mobileBreak { display: none; }
+.kobo-home__entrances { max-width: 800px; margin-inline: auto; }
+.kobo-home__sectionCaption { display: flex; align-items: center; gap: 19px; margin-bottom: 27px; font-size: 10px; letter-spacing: .15em; color: #64748b; }
+.kobo-home__sectionCaption > span:last-child { font-size: 8px; letter-spacing: .18em; }
+.kobo-home__captionLine { height: 1px; flex: 1; background: #e2e8f0; }
+.kobo-home__cardGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 64px; margin: 0; padding: 0; list-style: none; }
+.kobo-home__cardGrid > li { min-width: 0; }
+.kobo-home__aboutEntry { padding-bottom: 34px; }
+.kobo-home__cardLink { position: relative; isolation: isolate; display: block; width: calc(100% - 80px); color: inherit; text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.kobo-home__cardLink:focus-visible { outline: 3px solid #0ea5e9; outline-offset: 8px; border-radius: 4px; }
+.kobo-home__cardFace { position: relative; z-index: 1; display: flex; min-height: 224px; flex-direction: column; padding: 24px 23px 19px; border: 1px solid #cbd5e1; border-radius: 6px 3px 5px 3px / 3px 5px 3px 6px; background: #f8fafc; transition: background-color 220ms, box-shadow 220ms, border-color 220ms; }
+.kobo-home__aboutEntry .kobo-home__cardFace { border: 2px solid var(--navy); border-radius: 3px 7px 4px 6px / 6px 3px 7px 3px; background: #fff; box-shadow: 3px 4px 0 #e2e8f0; }
+.kobo-home__aboutEntry .kobo-home__cardFace::after { position: absolute; inset: 3px -4px -4px 3px; content: ''; border: 1px solid var(--navy); border-radius: 4px 3px 8px 3px; opacity: .18; pointer-events: none; }
+.kobo-home__cardGrid > li:nth-child(3) .kobo-home__cardFace { transform: rotate(.6deg); }
+.kobo-home__cardGrid > li:nth-child(4) .kobo-home__cardFace { transform: rotate(-.5deg); }
+.kobo-home__cardLink:hover .kobo-home__cardFace, .kobo-home__cardLink:focus-visible .kobo-home__cardFace, .kobo-home__cardLink[data-phase='leaving'] .kobo-home__cardFace { border-color: var(--navy); background: #f0f9ff; box-shadow: 4px 5px 0 var(--background); }
+.kobo-home__cardNumber { font-size: 8px; font-weight: 500; letter-spacing: .11em; opacity: .65; }
+.kobo-home__cardTitle { margin-top: 34px; font-size: clamp(24px, 2.7vw, 33px); font-weight: 600; line-height: 1.2; letter-spacing: -.03em; white-space: nowrap; }
+.kobo-home__titleDot { opacity: .55; }
+.kobo-home__cardDescription { margin-top: 8px; font-size: 11px; letter-spacing: .12em; color: #64748b; }
+.kobo-home__cardBottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 18px; font-size: 9px; color: #64748b; }
+.kobo-home__cardArrow { display: grid; width: 25px; height: 25px; flex-shrink: 0; place-items: center; border: 1px solid #cbd5e1; border-radius: 50%; font-size: 17px; }
+.kobo-home__illustration { position: absolute; top: 37px; right: 16px; width: 53px; height: 53px; opacity: .35; transform: rotate(-7deg); }
+.kobo-home__illustration > svg, .kobo-home__illustration > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.kobo-home__contactIllustration { top: auto; right: -37px; bottom: -4px; width: 61px; height: 91px; opacity: .65; transform: rotate(9deg); }
+.kobo-home__interactionHint { display: flex; align-items: center; gap: 7px; margin: 12px 0 0 5px; font-size: 9px; letter-spacing: .01em; color: #64748b; }
+.kobo-home__interactionHint > span:first-child { font-size: 18px; transform: rotate(-8deg); }
+.kobo-home__touchHint { display: none; }
+.kobo-home__footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 37px; padding: 27px 0 30px; border-top: 1px solid #e2e8f0; font-size: 9px; letter-spacing: .08em; color: #64748b; }
+.kobo-home__skipLink { position: fixed; z-index: 100; top: 10px; left: 10px; padding: 12px; background: #fff; transform: translateY(-160%); }
+.kobo-home__skipLink:focus { transform: translateY(0); }
+
+@media (hover: none), (pointer: coarse) {
+  .kobo-home__desktopHint { display: none; }
+  .kobo-home__touchHint { display: inline; }
+}
+
+@media (max-width: 960px) {
+  .kobo-home__shell { width: calc(100% - 64px); }
+  .kobo-home__cardGrid { gap: 25px 32px; }
+  .kobo-home__cardFace { padding-inline: 22px 20px; }
+  .kobo-home__heroSpark { top: 125px; right: 7%; }
+  .kobo-home__cardTitle { font-size: 31px; }
+}
+
+@media (max-width: 620px) {
+  .kobo-home__shell { width: calc(100% - 48px); }
+  .kobo-home__header { min-height: 128px; gap: 8px; padding-block: 15px; }
+  .kobo-home__brand { gap: 9px; }
+  .kobo-home__brand > svg { width: 33px; height: 37px; }
+  .kobo-home__brand strong { font-size: 21px; }
+  .kobo-home__brand small { font-size: 7px; }
+  .kobo-home__signature { width: 100px; }
+  .kobo-home__signatureLabel { margin-left: 2px; font-size: 14px; }
+  .kobo-home__staircase { width: 96px; margin-top: -1px; }
+  .kobo-home__hero { padding: 46px 0 39px; }
+  .kobo-home__eyebrow { font-size: 7px; letter-spacing: .13em; }
+  .kobo-home__heroTitle { margin: 19px 0; font-size: 31px; line-height: 1.65; letter-spacing: .1em; }
+  .kobo-home__mobileBreak { display: block; }
+  .kobo-home__heroCopy { font-size: 10px; line-height: 2; }
+  .kobo-home__heroSpark { top: 127px; right: 4%; font-size: 25px; }
+  .kobo-home__sectionCaption { gap: 12px; margin-bottom: 23px; font-size: 9px; }
+  .kobo-home__sectionCaption > span:last-child { font-size: 6px; letter-spacing: .13em; }
+  .kobo-home__cardGrid { max-width: 370px; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-inline: auto; }
+  .kobo-home__cardLink { width: calc(100% - 47px); }
+  .kobo-home__cardFace { min-height: 150px; padding: 18px 22px; }
+  .kobo-home__cardTitle { margin-top: 17px; font-size: 26px; }
+  .kobo-home__cardDescription { margin-top: 6px; font-size: 10px; }
+  .kobo-home__cardBottom { padding-top: 12px; font-size: 8px; }
+  .kobo-home__cardArrow { width: 21px; height: 21px; font-size: 15px; }
+  .kobo-home__aboutEntry .kobo-home__cardLink { width: calc(100% - 80px); }
+  .kobo-home__aboutEntry .kobo-home__cardFace { min-height: 229px; padding: 24px 22px 21px; }
+  .kobo-home__aboutEntry .kobo-home__cardTitle { margin-top: 31px; font-size: clamp(27px, 8vw, 34px); }
+  .kobo-home__aboutEntry .kobo-home__cardDescription { margin-top: 8px; font-size: 12px; }
+  .kobo-home__illustration { top: 29px; width: 45px; height: 45px; }
+  .kobo-home__contactIllustration { top: auto; right: -32px; width: 53px; height: 82px; }
+  .kobo-home__footer { gap: 10px; margin-top: 39px; padding-top: 21px; font-size: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kobo-home__cardFace { transition: none; }
+}
