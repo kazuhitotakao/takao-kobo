@@ -1,43 +1,38 @@
-import Link from 'next/link';
-import { HeroIllustration } from '@/components/hero-illustration';
+import { AboutCard } from '@/components/home/about-card';
+import { HomeHeader } from '@/components/home/home-header';
+import { MenuCard } from '@/components/home/menu-card';
 import { Container } from '@/components/layout/container';
-import { MenuTitle, PageTransition } from '@/components/page-transition';
-import { menuNames, menuSlugs } from '@/lib/menu';
+import { PageTransition } from '@/components/page-transition';
+import { menuSlugs } from '@/lib/menu';
 
+// 下層ページは水色の背景だが、トップは白地に紺の線で描く。
+// About me の人物がカードの右へはみ出すので、画面の外に出た分で横スクロールが出ないよう切っておく
 export default function HomePage() {
   return (
     <PageTransition>
-      <main className="py-12 sm:py-20">
-        <Container>
-          <section className="flex flex-col items-center gap-8 text-center sm:flex-row sm:justify-between sm:text-left">
-            <div>
-              <p className="text-sm font-semibold tracking-[0.2em] text-sky-700">Step by Step</p>
-              <h1 className="mt-3 text-4xl font-bold sm:text-5xl">髙尾工房</h1>
-              <p className="mt-5 text-xl font-medium sm:text-2xl">一歩ずつ、つくっていく。</p>
-            </div>
-            <HeroIllustration className="w-44 shrink-0 sm:w-60" />
-          </section>
-          <ul className="mt-12 grid gap-4 sm:mt-16 sm:grid-cols-2">
-            {menuSlugs.map((slug) => (
-              <li key={slug}>
-                <Link
-                  href={`/${slug}`}
-                  transitionTypes={['nav-forward']}
-                  className="group flex items-center justify-between rounded-xl border border-sky-100 bg-white p-5 text-lg font-semibold shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-6"
-                >
-                  <MenuTitle slug={slug}>{menuNames[slug]}</MenuTitle>
-                  <span
-                    aria-hidden
-                    className="text-slate-400 transition group-hover:translate-x-1 group-hover:text-sky-600 motion-reduce:transition-none"
-                  >
-                    →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </main>
+      <div className="flex-1 overflow-x-clip bg-white">
+        <HomeHeader />
+        <main className="py-12 sm:py-16">
+          <Container>
+            <p className="text-2xl leading-normal font-bold sm:text-3xl">
+              <span className="bg-linear-to-t from-sky-200 from-35% to-transparent to-35% px-1">
+                一歩ずつ、つくっていく。
+              </span>
+            </p>
+            <p className="mt-4 leading-loose text-balance text-slate-600 sm:text-lg">
+              つくること、暮らすことを記録する小さな工房です。
+            </p>
+            <nav aria-label="メインメニュー" className="mt-12 sm:mt-14">
+              {/* About me の人物が出る場所として、スマホはカードの右を、PC は列の間をあける（globals.css の --leave-x より広く） */}
+              <ul className="grid gap-6 pr-16 sm:grid-cols-2 sm:gap-x-24 sm:gap-y-10 sm:pr-0">
+                {menuSlugs.map((slug) => (
+                  <li key={slug}>{slug === 'about' ? <AboutCard /> : <MenuCard slug={slug} />}</li>
+                ))}
+              </ul>
+            </nav>
+          </Container>
+        </main>
+      </div>
     </PageTransition>
   );
 }
