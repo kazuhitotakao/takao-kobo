@@ -12,9 +12,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* 1画面目は白から水色へのグラデーション、それより下は水色で塗る */
+/* 全体は水色で塗る（下層ページの本文は SubPage 側で白っぽい水色にする） */
 body {
-  background: var(--background) linear-gradient(#ffffff, var(--background)) no-repeat;
+  background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
