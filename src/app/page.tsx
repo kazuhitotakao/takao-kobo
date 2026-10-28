@@ -1,43 +1,39 @@
-import Link from 'next/link';
-import { HeroIllustration } from '@/components/hero-illustration';
-import { Container } from '@/components/layout/container';
-import { MenuTitle, PageTransition } from '@/components/page-transition';
-import { menuNames, menuSlugs } from '@/lib/menu';
+import { AboutCard } from '@/components/home/about-card';
+import { HomeHeader } from '@/components/home/home-header';
+import { MenuCard } from '@/components/home/menu-card';
+import { StepByStep } from '@/components/home/step-by-step';
+import '@/components/home/home-page.css';
+import { PageTransition } from '@/components/page-transition';
+import type { MenuSlug } from '@/lib/menu';
 
+// トップでの並び順だけを変え、下層ページのヘッダーメニューには影響させない。
+const homeMenuSlugs = ['about', 'blog', 'works', 'contact'] as const satisfies readonly MenuSlug[];
+
+// スクロールせずに一画面で見渡せるよう、ヘッダー・キャッチコピー・カードだけを置く。
 export default function HomePage() {
   return (
     <PageTransition>
-      <main className="py-12 sm:py-20">
-        <Container>
-          <section className="flex flex-col items-center gap-8 text-center sm:flex-row sm:justify-between sm:text-left">
-            <div>
-              <p className="text-sm font-semibold tracking-[0.2em] text-sky-700">Step by Step</p>
-              <h1 className="mt-3 text-4xl font-bold sm:text-5xl">髙尾工房</h1>
-              <p className="mt-5 text-xl font-medium sm:text-2xl">一歩ずつ、つくっていく。</p>
-            </div>
-            <HeroIllustration className="w-44 shrink-0 sm:w-60" />
-          </section>
-          <ul className="mt-12 grid gap-4 sm:mt-16 sm:grid-cols-2">
-            {menuSlugs.map((slug) => (
-              <li key={slug}>
-                <Link
-                  href={`/${slug}`}
-                  transitionTypes={['nav-forward']}
-                  className="group flex items-center justify-between rounded-xl border border-sky-100 bg-white p-5 text-lg font-semibold shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-6"
-                >
-                  <MenuTitle slug={slug}>{menuNames[slug]}</MenuTitle>
-                  <span
-                    aria-hidden
-                    className="text-slate-400 transition group-hover:translate-x-1 group-hover:text-sky-600 motion-reduce:transition-none"
-                  >
-                    →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </main>
+      <div className="kobo-home__home">
+        <div className="kobo-home__shell">
+          <HomeHeader />
+          <main className="kobo-home__main">
+            <section className="kobo-home__hero" aria-labelledby="home-title">
+              <StepByStep />
+              <h1 id="home-title" className="kobo-home__heroTitle">一歩ずつ、つくっていく。</h1>
+              <p className="kobo-home__heroCopy">考えて、試して、ときどき寄り道。</p>
+            </section>
+            <nav className="kobo-home__menu" aria-label="メインメニュー">
+              <ul className="kobo-home__cardGrid">
+                {homeMenuSlugs.map((slug) => (
+                  <li key={slug} className={slug === 'about' ? 'kobo-home__aboutEntry' : undefined}>
+                    {slug === 'about' ? <AboutCard /> : <MenuCard slug={slug} />}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </main>
+        </div>
+      </div>
     </PageTransition>
   );
 }

@@ -1,0 +1,83 @@
+/* トップ専用。既存の色変数を使い、globals.css や詳細ページのスタイルには触れない。 */
+.kobo-home__home {
+  flex: 1;
+  overflow-x: clip;
+  background: #fff;
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ヘッダーまで含めて一画面に収める。縦に余った高さはカードを伸ばして埋め、
+   伸ばしきってもまだ余るときだけ、その分を上下に振り分ける */
+.kobo-home__shell { display: flex; min-height: 100dvh; width: min(800px, calc(100% - 64px)); flex-direction: column; margin-inline: auto; }
+.kobo-home__header { display: flex; align-items: center; padding-block: 12px; border-bottom: 1px solid #e2e8f0; }
+.kobo-home__brand { display: inline-flex; flex-shrink: 0; align-items: center; gap: 10px; }
+.kobo-home__brand > svg { width: 36px; height: 36px; }
+.kobo-home__brand strong { display: block; font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif; font-size: 21px; font-weight: 800; line-height: 1.35; letter-spacing: .16em; white-space: nowrap; }
+.kobo-home__brand small { display: block; margin-top: 3px; font-size: 8px; font-weight: 700; letter-spacing: .29em; }
+.kobo-home__brand > span { text-align: center; }
+.kobo-home__main { display: flex; flex: 1; flex-direction: column; justify-content: center; gap: clamp(16px, 4dvh, 56px); padding-block: clamp(12px, 3dvh, 32px); }
+.kobo-home__menu { display: flex; flex: 1; max-height: 480px; }
+.kobo-home__hero { text-align: center; }
+/* 階段の絵は、画面の高さに余裕がある分だけ大きくする（高さ600pxで80px、680px以上で160px）。
+   キャッチコピーも背の低い画面では縮めて、一画面に収める */
+.kobo-home__signature { display: flex; width: fit-content; flex-direction: column; align-items: center; margin: 0 auto 4px; }
+.kobo-home__signatureLabel { align-self: flex-start; margin-left: -12px; font-size: 16px; font-weight: 500; font-style: italic; line-height: 1.5; letter-spacing: .04em; transform: rotate(-4deg); }
+.kobo-home__staircase { display: block; width: clamp(72px, 100dvh - 520px, 160px); height: auto; margin-top: -4px; }
+/* 字間を最後の文字のあとにも足すので、左にも同じだけあけて中央に揃える */
+.kobo-home__heroTitle { padding-left: .12em; font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif; font-size: clamp(28px, min(3.4vw, 6dvh), 40px); font-weight: 600; line-height: 1.5; letter-spacing: .12em; }
+.kobo-home__heroCopy { margin-top: 8px; font-size: 15px; line-height: 2; letter-spacing: .12em; color: #64748b; }
+/* 列の間は About me の人物が飛び出す場所なので、globals.css の --leave-x より広くあける */
+.kobo-home__cardGrid { display: grid; flex: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 16px 104px; margin: 0; padding: 0; list-style: none; }
+.kobo-home__cardGrid > li { min-width: 0; }
+.kobo-home__cardLink { position: relative; isolation: isolate; display: block; height: 100%; color: inherit; text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.kobo-home__cardLink:focus-visible { outline: 3px solid #0ea5e9; outline-offset: 6px; border-radius: 12px; }
+/* カードの位置が小数になると、人物の体の線がカードの下端から少しにじむので、下端より少し上で切る */
+.kobo-home__cardLink .about-card__stage { clip-path: inset(-100% -100% 2px 0); }
+/* About me の人物（高さ約135px）が上からはみ出さないよう、カードはそれより高くする */
+.kobo-home__cardFace { position: relative; z-index: 1; display: grid; height: 100%; min-height: 144px; grid-template: "title illustration" auto "caption illustration" auto ". arrow" 1fr / minmax(0, 1fr) auto; column-gap: 16px; padding: 20px 22px 18px; border: 1.5px solid var(--navy); border-radius: 10px; background: #fff; transition: background-color 200ms; }
+.kobo-home__cardLink:hover .kobo-home__cardFace, .kobo-home__cardLink:focus-visible .kobo-home__cardFace, .kobo-home__cardLink[data-phase='leaving'] .kobo-home__cardFace { background: #f0f9ff; }
+.kobo-home__cardTitle { grid-area: title; font-size: 28px; font-weight: 600; line-height: 1.2; letter-spacing: -.02em; white-space: nowrap; }
+.kobo-home__cardCaption { grid-area: caption; margin-top: 6px; font-size: 14px; letter-spacing: .1em; color: #64748b; }
+.kobo-home__illustration { grid-area: illustration; width: 52px; height: 52px; opacity: .4; }
+.kobo-home__illustration > svg, .kobo-home__illustration > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.kobo-home__cardArrow { grid-area: arrow; align-self: end; justify-self: end; font-size: 20px; line-height: 1; transition: translate 200ms; }
+.kobo-home__cardLink:hover .kobo-home__cardArrow, .kobo-home__cardLink:focus-visible .kobo-home__cardArrow { translate: 4px 0; }
+
+/* スマホは1列。About me の右だけ人物が飛び出す分をあけ、ほかのカードは1行に縮めて一画面に収める */
+@media (max-width: 620px) {
+  .kobo-home__shell { width: calc(100% - 40px); }
+  .kobo-home__header { padding-block: 10px; }
+  .kobo-home__brand { gap: 8px; }
+  .kobo-home__brand > svg { width: 30px; height: 30px; }
+  .kobo-home__brand strong { font-size: 18px; }
+  .kobo-home__brand small { font-size: 7px; }
+  .kobo-home__signatureLabel { margin-left: -8px; font-size: 13px; }
+  .kobo-home__staircase { width: clamp(52px, 100dvh - 494px, 120px); margin-top: -2px; }
+  .kobo-home__main { gap: clamp(12px, 2.5dvh, 40px); padding-block: clamp(12px, 2.5dvh, 40px); }
+  .kobo-home__heroTitle { padding-left: .04em; font-size: clamp(20px, 6.4vw, 28px); letter-spacing: .04em; }
+  .kobo-home__heroCopy { margin-top: 4px; font-size: 13px; letter-spacing: .1em; }
+  .kobo-home__menu { max-height: 400px; }
+  /* 最小の高さ（About me は144px、ほかは52px）と同じ比率で伸ばし、背の低い画面では最小の高さのまま並べる */
+  .kobo-home__cardGrid { grid-template-columns: minmax(0, 1fr); grid-template-rows: 144fr; grid-auto-rows: 52fr; gap: 8px; }
+  .kobo-home__cardFace { min-height: 52px; grid-template: "title caption illustration arrow" / auto minmax(0, 1fr) auto auto; align-items: center; column-gap: 12px; padding: 8px 16px; }
+  .kobo-home__cardTitle { font-size: 20px; }
+  .kobo-home__cardCaption { margin-top: 0; font-size: 13px; }
+  .kobo-home__illustration { width: 32px; height: 32px; }
+  .kobo-home__cardArrow { align-self: center; font-size: 18px; }
+  .kobo-home__aboutEntry .kobo-home__cardLink { width: calc(100% - 72px); }
+  .kobo-home__aboutEntry .kobo-home__cardFace { min-height: 144px; grid-template: "title" auto "caption" auto "arrow" 1fr / minmax(0, 1fr); align-items: start; padding: 20px 20px 16px; }
+  .kobo-home__aboutEntry .kobo-home__cardTitle { font-size: 26px; }
+  .kobo-home__aboutEntry .kobo-home__cardCaption { margin-top: 6px; }
+  .kobo-home__aboutEntry .kobo-home__cardArrow { align-self: end; }
+}
+
+/* 幅の狭いスマホでは、説明が折り返さないよう1行のカードのイラストを外す */
+@media (max-width: 350px) {
+  .kobo-home__illustration { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kobo-home__cardFace, .kobo-home__cardArrow { transition: none; }
+  .kobo-home__cardLink:hover .kobo-home__cardArrow, .kobo-home__cardLink:focus-visible .kobo-home__cardArrow { translate: none; }
+}

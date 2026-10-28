@@ -3,11 +3,14 @@
 :root {
   --background: #e0f2fe;
   --foreground: #1e293b;
+  /* トップの線画やカードの枠に使う紺色 */
+  --navy: #223a70;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-navy: var(--navy);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -136,5 +139,95 @@ body {
   ::view-transition-group(*) {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
+  }
+}
+
+/* トップの About me カード（src/components/home/about-card.tsx）。
+   人物をカードの後ろに隠しておき、右へずらしてカードの右端から覗かせる。
+   カードの右には人物が出る分の余白が要る（src/app/page.tsx でスマホはカードの右、PC は列の間をあけている） */
+.about-card {
+  --peek-x: 54px;
+  --leave-x: 96px;
+}
+
+/* リンクを overflow: hidden で切り抜くと、右へ出た人物まで消えてしまう。
+   カードの下端より下だけを切って、人物がカードの向こうに立っているように見せる */
+.about-card__stage {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(-100% -100% 0 0);
+  pointer-events: none;
+}
+
+.about-card__character {
+  position: absolute;
+  right: 8px;
+  bottom: 0;
+  width: 96px;
+  height: auto;
+  transform-origin: 50% 100%;
+}
+
+.character__mouth-smile,
+.character__cheek {
+  opacity: 0;
+}
+
+/* 腕は肩（viewBox の座標）を軸に振る */
+.character__arm {
+  transform-origin: 100px 126px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .about-card__character {
+    transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .character__mouth-calm,
+  .character__mouth-smile,
+  .character__cheek {
+    transition: opacity 120ms ease-out;
+  }
+
+  /* スマホのタップでは覗かせず、そのまま飛び出させる */
+  @media (hover: hover) {
+    .about-card:hover .about-card__character {
+      transform: translateX(var(--peek-x)) rotate(7deg);
+    }
+  }
+  .about-card:focus-visible .about-card__character {
+    transform: translateX(var(--peek-x)) rotate(7deg);
+  }
+
+  /* クリック後は、さらに外へ出て笑顔で手を振る（ここの合計時間より about-card.tsx の待ち時間を長くする） */
+  .about-card[data-phase="leaving"] .about-card__character {
+    transform: translateX(var(--leave-x)) rotate(-3deg);
+    transition-duration: 390ms;
+    transition-timing-function: cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  .about-card[data-phase="leaving"] .character__mouth-calm {
+    opacity: 0;
+  }
+  .about-card[data-phase="leaving"] :is(.character__mouth-smile, .character__cheek) {
+    opacity: 1;
+  }
+  .about-card[data-phase="leaving"] .character__arm {
+    animation: character-wave 530ms ease-in-out 60ms both;
+  }
+}
+
+/* 動きを減らす設定では、人物を最初から覗かせた静止画にする（クリックしても待たずに移動する） */
+@media (prefers-reduced-motion: reduce) {
+  .about-card__character {
+    transform: translateX(var(--peek-x)) rotate(7deg);
+  }
+}
+
+@keyframes character-wave {
+  25%,
+  75% {
+    transform: rotate(-12deg);
+  }
+  50% {
+    transform: rotate(10deg);
   }
 }
