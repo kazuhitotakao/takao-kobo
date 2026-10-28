@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { ExternalLink } from '@/components/external-link';
+import { parseTechnologies } from '@/lib/works';
 import type { Work } from '@/types/work';
 
 // 学習課題のカードに並べる技術名の上限。残りは詳細ページで見せる
@@ -7,21 +9,11 @@ const compactTechnologyLimit = 5;
 
 const focusRingClassName = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500';
 
-// technologies の1行目を技術名として扱い、2行目以降の補足（過去の構築環境など）は一覧では出さない。
-// 「@vite-pwa/nuxt」のような名前を分けないよう、前後どちらかに空白がある / だけで区切る
-function getTechnologyNames(technologies?: string): string[] {
-  const [firstLine = ''] = technologies?.split(/\r?\n/) ?? [];
-  return firstLine
-    .split(/\s+\/\s*|\s*\/\s+/)
-    .map((name) => name.trim())
-    .filter(Boolean);
-}
-
 type WorkCardProps = {
   work: Work;
   // featured は個人開発の大きいカード、compact は学習課題の小さいカード
   variant: 'featured' | 'compact';
-  // 作品詳細ページ（/works/[id]）ができたら渡す。未指定のあいだは「詳しく見る」を出さない
+  // 未指定なら「詳しく見る」を出さない
   detailHref?: string;
   // ページを開いてすぐ見える位置のカードだけ、サムネイルを遅延読み込みせず先に読む
   aboveTheFold?: boolean;
@@ -29,7 +21,8 @@ type WorkCardProps = {
 
 export function WorkCard({ work, variant, detailHref, aboveTheFold = false }: WorkCardProps) {
   const isFeatured = variant === 'featured';
-  const technologyNames = getTechnologyNames(work.technologies);
+  // 補足の行（過去の構築環境など）は詳細ページだけで出す
+  const technologyNames = parseTechnologies(work.technologies).names;
   const visibleTechnologyNames = isFeatured
     ? technologyNames
     : technologyNames.slice(0, compactTechnologyLimit);
@@ -38,23 +31,32 @@ export function WorkCard({ work, variant, detailHref, aboveTheFold = false }: Wo
 
   return (
     <article
-      className={`flex h-full flex-col overflow-hidden border border-sky-100 bg-white shadow-sm transition duration-200 hover:border-sky-300 hover:shadow-md motion-reduce:transition-none ${
+      className={`relative flex h-full flex-col overflow-hidden border border-sky-100 bg-white shadow-sm transition duration-200 hover:border-sky-300 hover:shadow-md motion-reduce:transition-none ${
         isFeatured ? 'rounded-2xl' : 'rounded-xl'
       }`}
     >
       {work.thumbnail && (
-        <div className="relative aspect-video border-b border-sky-100 bg-sky-100">
-          <Image
-            src={work.thumbnail.url}
-            alt={work.thumbnail.alt ?? ''}
-            fill
-            sizes={
-              isFeatured ? '(min-width: 768px) 720px, 100vw' : '(min-width: 768px) 348px, (min-width: 640px) 50vw, 100vw'
-            }
-            loading={aboveTheFold ? 'eager' : undefined}
-            fetchPriority={aboveTheFold ? 'high' : undefined}
-            className="object-cover"
-          />
+        // サムネイルは下側が白っぽいものが多く、白い本文と境目が分かりにくいので、淡い水色の帯で額縁のように囲む
+        <div className={`border-b border-sky-200 bg-sky-100 ${isFeatured ? 'p-4 sm:p-5' : 'p-3'}`}>
+          <div
+            className={`relative aspect-video overflow-hidden shadow-sm ring-1 ring-sky-900/10 ${
+              isFeatured ? 'rounded-xl' : 'rounded-lg'
+            }`}
+          >
+            <Image
+              src={work.thumbnail.url}
+              alt={work.thumbnail.alt ?? ''}
+              fill
+              sizes={
+                isFeatured
+                  ? '(min-width: 768px) 680px, 100vw'
+                  : '(min-width: 768px) 324px, (min-width: 640px) 50vw, 100vw'
+              }
+              loading={aboveTheFold ? 'eager' : undefined}
+              fetchPriority={aboveTheFold ? 'high' : undefined}
+              className="object-cover"
+            />
+          </div>
         </div>
       )}
 
@@ -116,56 +118,41 @@ export function WorkCard({ work, variant, detailHref, aboveTheFold = false }: Wo
             className={`flex flex-wrap items-center ${isFeatured ? 'mt-8 gap-3' : 'mt-auto gap-x-5 gap-y-2 pt-5 text-sm'}`}
           >
             {detailHref && (
+              // 既定の prefetch は詳細ページの枠だけなので、本文まで先読みして遷移直後に読み込み表示を出さない。
+              // ::after をカード全体に広げて、どこを押しても詳細へ進めるようにする（<a> は入れ子にできないため）。
+              // translate や scale を付けると ::after の基準がこのリンクに変わって押せる範囲が縮むので、色の変化だけにする
               <Link
                 href={detailHref}
+                prefetch={true}
                 transitionTypes={['nav-forward']}
                 className={
                   isFeatured
-                    ? `inline-flex items-center gap-2 rounded-full bg-slate-800 px-7 py-3 font-semibold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-slate-700 hover:shadow-md active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${focusRingClassName}`
-                    : `group inline-flex items-center gap-1 rounded-sm font-semibold text-sky-800 transition-colors hover:text-sky-600 ${focusRingClassName}`
+                    ? `group inline-flex items-center gap-2 rounded-full bg-slate-800 px-7 py-3 font-semibold text-white shadow-sm transition-colors duration-200 after:absolute after:inset-0 hover:bg-slate-700 motion-reduce:transition-none ${focusRingClassName}`
+                    : `group inline-flex items-center gap-1 rounded-sm font-semibold text-sky-800 transition-colors after:absolute after:inset-0 hover:text-sky-600 ${focusRingClassName}`
                 }
               >
                 詳しく見る
+                <span className="sr-only">：{work.title}</span>
                 <span
                   aria-hidden
-                  className={
-                    isFeatured
-                      ? undefined
-                      : 'transition group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0'
-                  }
+                  className="transition group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
                 >
                   →
                 </span>
               </Link>
             )}
             {work.demoUrl && (
-              <a
+              // カード全体に広げた「詳しく見る」の上に重ねて、こちらは公開サイトへ進めるようにする
+              <ExternalLink
                 href={work.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 className={
                   isFeatured
-                    ? `inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-7 py-3 font-semibold text-sky-900 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-200 hover:shadow-md active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${focusRingClassName}`
-                    : `inline-flex items-center gap-1 rounded-sm font-semibold text-sky-800 transition-colors hover:text-sky-600 ${focusRingClassName}`
+                    ? `relative z-10 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-7 py-3 font-semibold text-sky-900 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-200 hover:shadow-md active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${focusRingClassName}`
+                    : `relative z-10 inline-flex items-center gap-1 rounded-sm font-semibold text-sky-800 transition-colors hover:text-sky-600 ${focusRingClassName}`
                 }
               >
                 公開サイトを見る
-                <span className="sr-only">（新しいタブで開きます）</span>
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                  className="size-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M14 4h6v6" />
-                  <path d="M20 4 10 14" />
-                  <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" />
-                </svg>
-              </a>
+              </ExternalLink>
             )}
           </div>
         )}

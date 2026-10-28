@@ -12,7 +12,6 @@ function WorksSection({ title, children }: { title: string; children: ReactNode 
   );
 }
 
-// 作品詳細ページ（/works/[id]）ができたら、各 WorkCard に detailHref={`/works/${work.id}`} を渡して「詳しく見る」を出す
 export default async function WorksPage() {
   const works = await getWorks();
   const personalWorks = works.filter((work) => work.category.includes('個人開発'));
@@ -27,13 +26,18 @@ export default async function WorksPage() {
 
       {/* 手描きイラストを後から差し込めるよう、セクション同士の間は広めにあけておく */}
       {personalWorks.length > 0 || learningWorks.length > 0 ? (
-        <div className="mt-12 divide-y divide-sky-200 sm:mt-14">
+        <div className="mt-12 divide-y divide-sky-300 sm:mt-14">
           {personalWorks.length > 0 && (
             <WorksSection title="個人開発">
               <ul className="space-y-10">
                 {personalWorks.map((work, index) => (
                   <li key={work.id}>
-                    <WorkCard work={work} variant="featured" aboveTheFold={index === 0} />
+                    <WorkCard
+                      work={work}
+                      variant="featured"
+                      detailHref={`/works/${work.id}`}
+                      aboveTheFold={index === 0}
+                    />
                   </li>
                 ))}
               </ul>
@@ -44,7 +48,7 @@ export default async function WorksPage() {
               <ul className="grid gap-6 sm:grid-cols-2">
                 {learningWorks.map((work) => (
                   <li key={work.id}>
-                    <WorkCard work={work} variant="compact" />
+                    <WorkCard work={work} variant="compact" detailHref={`/works/${work.id}`} />
                   </li>
                 ))}
               </ul>
