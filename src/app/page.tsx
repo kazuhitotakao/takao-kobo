@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { HeroIllustration } from '@/components/hero-illustration';
+import { Container } from '@/components/layout/container';
 import { MenuTitle, PageTransition } from '@/components/page-transition';
 import { menuNames, menuSlugs } from '@/lib/menu';
 
 export default function HomePage() {
   return (
     <PageTransition>
-      <main className="px-6 py-12 sm:py-20">
-        <div className="mx-auto max-w-3xl">
+      <main className="py-12 sm:py-20">
+        <Container>
           <section className="flex flex-col items-center gap-8 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>
               <p className="text-sm font-semibold tracking-[0.2em] text-sky-700">Step by Step</p>
@@ -35,7 +36,7 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
-        </div>
+        </Container>
       </main>
     </PageTransition>
   );
