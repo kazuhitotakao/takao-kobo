@@ -27,24 +27,75 @@
 /* 字間を最後の文字のあとにも足すので、左にも同じだけあけて中央に揃える */
 .kobo-home__heroTitle { padding-left: .12em; font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif; font-size: clamp(28px, min(3.4vw, 6dvh), 40px); font-weight: 600; line-height: 1.5; letter-spacing: .12em; }
 .kobo-home__heroCopy { margin-top: 8px; font-size: 15px; line-height: 2; letter-spacing: .12em; color: #64748b; }
-/* 列の間は About me の人物が飛び出す場所なので、globals.css の --leave-x より広くあける */
+/* 列の間は、左右のカードの後ろから覗くものが飛び出す場所なので、下の --leave-x より広くあける */
 .kobo-home__cardGrid { display: grid; flex: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 16px 104px; margin: 0; padding: 0; list-style: none; }
 .kobo-home__cardGrid > li { min-width: 0; }
 .kobo-home__cardLink { position: relative; isolation: isolate; display: block; height: 100%; color: inherit; text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .kobo-home__cardLink:focus-visible { outline: 3px solid #0ea5e9; outline-offset: 6px; border-radius: 12px; }
-/* カードの位置が小数になると、人物の体の線がカードの下端から少しにじむので、下端より少し上で切る */
-.kobo-home__cardLink .about-card__stage { clip-path: inset(-100% -100% 2px 0); }
-/* About me の人物（高さ約135px）が上からはみ出さないよう、カードはそれより高くする */
+/* 後ろに隠れている覗くもの（いちばん高い About me の人物で約135px）が上からはみ出さないよう、カードはそれより高くする */
 .kobo-home__cardFace { position: relative; z-index: 1; display: grid; height: 100%; min-height: 144px; grid-template: "title illustration" auto "caption illustration" auto ". arrow" 1fr / minmax(0, 1fr) auto; column-gap: 16px; padding: 20px 22px 18px; border: 1.5px solid var(--navy); border-radius: 10px; background: #fff; transition: background-color 200ms; }
 .kobo-home__cardLink:hover .kobo-home__cardFace, .kobo-home__cardLink:focus-visible .kobo-home__cardFace, .kobo-home__cardLink[data-phase='leaving'] .kobo-home__cardFace { background: #f0f9ff; }
 .kobo-home__cardTitle { grid-area: title; font-size: 28px; font-weight: 600; line-height: 1.2; letter-spacing: -.02em; white-space: nowrap; }
 .kobo-home__cardCaption { grid-area: caption; margin-top: 6px; font-size: 14px; letter-spacing: .1em; color: #64748b; }
-.kobo-home__illustration { grid-area: illustration; width: 52px; height: 52px; opacity: .4; }
+.kobo-home__illustration { grid-area: illustration; width: 52px; height: 52px; opacity: .4; transition: opacity 200ms; }
+.kobo-home__cardLink:is(:hover, :focus-visible, [data-phase='leaving']) .kobo-home__illustration { opacity: .8; }
 .kobo-home__illustration > svg, .kobo-home__illustration > img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .kobo-home__cardArrow { grid-area: arrow; align-self: end; justify-self: end; font-size: 20px; line-height: 1; transition: translate 200ms; }
 .kobo-home__cardLink:hover .kobo-home__cardArrow, .kobo-home__cardLink:focus-visible .kobo-home__cardArrow { translate: 4px 0; }
 
-/* スマホは1列。About me の右だけ人物が飛び出す分をあけ、ほかのカードは1行に縮めて一画面に収める */
+/* カードの後ろから覗くもの（menu-card.tsx の peekers。About me の人物・Works の積み木・Blog の猫・Contact の花）。
+   覗くものをカードの後ろに隠しておき、横へずらしてカードの端から覗かせる。PC は左の列を右へ、右の列を左へずらして、列の間に覗かせる。
+   --peek-dir は覗く向き（1 で右、-1 で左）。積み木は傾けると崩れそうに見え、猫はラフ絵どおり立たせたいので、まっすぐのまま出す。
+   猫の --peek-x / --leave-x は、cat.tsx の絵のカードの端（x=100・x=50）がカードの右端に重なる値（幅 300 の絵を --peeker-width に縮めた分で計算） */
+.peek-card--about { --peek-x: 54px; --leave-x: 96px; --peeker-width: 96px; }
+.peek-card--works { --peek-x: 70px; --leave-x: 92px; --peeker-width: 96px; --peek-dir: -1; --peek-tilt: 0deg; --leave-tilt: 0deg; }
+.peek-card--blog { --peek-x: 72px; --leave-x: 88px; --peeker-width: 96px; --peek-tilt: 0deg; --leave-tilt: 0deg; }
+.peek-card--contact { --peek-x: 40px; --leave-x: 66px; --peeker-width: 64px; --peek-dir: -1; }
+/* リンクを overflow: hidden で切り抜くと、横へ出たものまで消えてしまう。カードの下端より下だけを切って、カードの向こうにいるように見せる。
+   カードの位置が小数になると線が下端から少しにじむので、下端より少し上で切る */
+.peek-card__stage { position: absolute; inset: 0; clip-path: inset(-100% -100% 2px -100%); pointer-events: none; }
+.peek-card__character { position: absolute; right: 8px; bottom: 0; width: var(--peeker-width); height: auto; transform-origin: 50% 100%; }
+.peek-card--works .peek-card__character, .peek-card--contact .peek-card__character { right: auto; left: 8px; }
+/* 押したときにだけ出すもの（笑顔・ほっぺ・フレーメン反応の顔・積み上がる積み木と星・咲いた花） */
+.character__mouth-smile, .character__cheek, .cat__flehmen, .blocks__piece, .blocks__star, .flower__bloom { opacity: 0; }
+/* 腕は肩（viewBox の座標）を軸に振る */
+.character__arm { transform-origin: 100px 126px; }
+.blocks__piece, .blocks__star, .flower__bloom { transform-box: fill-box; transform-origin: center; }
+.blocks__piece--1 { --delay: 60ms; }
+.blocks__piece--2 { --delay: 160ms; }
+.blocks__star { --delay: 260ms; }
+.flower__bloom { --delay: 100ms; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .peek-card__character { transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .character__mouth-calm, .character__mouth-smile, .character__cheek, .flower__bud { transition: opacity 120ms ease-out; }
+  .blocks__piece { transform: translateY(-24px); }
+  .blocks__star, .flower__bloom { transform: scale(.2); }
+  /* スマホのタップでは覗かせず、そのまま飛び出させる */
+  @media (hover: hover) {
+    .peek-card:hover .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--peek-x))) rotate(calc(var(--peek-dir, 1) * var(--peek-tilt, 7deg))); }
+  }
+  .peek-card:focus-visible .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--peek-x))) rotate(calc(var(--peek-dir, 1) * var(--peek-tilt, 7deg))); }
+  /* クリック後は、さらに外へ出て反応する（人物は笑顔で手を振り、猫はフレーメン反応の顔になり、
+     積み木は残りが1つずつ積み上がって星が光り、花は咲く）。ここの合計時間より menu-card.tsx の待ち時間を長くする */
+  .peek-card[data-phase='leaving'] .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--leave-x))) rotate(calc(var(--peek-dir, 1) * var(--leave-tilt, -3deg))); transition-duration: 390ms; transition-timing-function: cubic-bezier(0.34, 1.4, 0.64, 1); }
+  .peek-card[data-phase='leaving'] :is(.character__mouth-calm, .cat__calm, .flower__bud) { opacity: 0; }
+  .peek-card[data-phase='leaving'] :is(.character__mouth-smile, .character__cheek, .cat__flehmen) { opacity: 1; }
+  .peek-card[data-phase='leaving'] :is(.blocks__piece, .blocks__star, .flower__bloom) { opacity: 1; transform: none; transition: opacity 120ms var(--delay), transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay); }
+  .peek-card[data-phase='leaving'] .character__arm { animation: character-wave 530ms ease-in-out 60ms both; }
+}
+
+/* 動きを減らす設定では、最初から覗かせた静止画にする（クリックしても待たずに移動する） */
+@media (prefers-reduced-motion: reduce) {
+  .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--peek-x))) rotate(calc(var(--peek-dir, 1) * var(--peek-tilt, 7deg))); }
+}
+
+@keyframes character-wave {
+  25%, 75% { transform: rotate(-12deg); }
+  50% { transform: rotate(10deg); }
+}
+
+/* スマホは1列。どのカードも右に覗くものが飛び出す分をあけ、About me 以外は1行に縮めて一画面に収める */
 @media (max-width: 620px) {
   .kobo-home__shell { width: calc(100% - 40px); }
   .kobo-home__header { padding-block: 10px; }
@@ -60,24 +111,32 @@
   .kobo-home__menu { max-height: 400px; }
   /* 最小の高さ（About me は144px、ほかは52px）と同じ比率で伸ばし、背の低い画面では最小の高さのまま並べる */
   .kobo-home__cardGrid { grid-template-columns: minmax(0, 1fr); grid-template-rows: 144fr; grid-auto-rows: 52fr; gap: 8px; }
-  .kobo-home__cardFace { min-height: 52px; grid-template: "title caption illustration arrow" / auto minmax(0, 1fr) auto auto; align-items: center; column-gap: 12px; padding: 8px 16px; }
+  /* 1行のカードは横幅が足りないので、カードの中の絵は About me にだけ出す */
+  .kobo-home__cardLink { width: calc(100% - 64px); }
+  .kobo-home__cardFace { min-height: 52px; grid-template: "title caption arrow" / auto minmax(0, 1fr) auto; align-items: center; column-gap: 12px; padding: 8px 16px; }
   .kobo-home__cardTitle { font-size: 20px; }
   .kobo-home__cardCaption { margin-top: 0; font-size: 13px; }
-  .kobo-home__illustration { width: 32px; height: 32px; }
+  .kobo-home__illustration { display: none; }
   .kobo-home__cardArrow { align-self: center; font-size: 18px; }
-  .kobo-home__aboutEntry .kobo-home__cardLink { width: calc(100% - 72px); }
-  .kobo-home__aboutEntry .kobo-home__cardFace { min-height: 144px; grid-template: "title" auto "caption" auto "arrow" 1fr / minmax(0, 1fr); align-items: start; padding: 20px 20px 16px; }
+  .kobo-home__aboutEntry .kobo-home__cardFace { min-height: 144px; grid-template: "title illustration" auto "caption illustration" auto ". arrow" 1fr / minmax(0, 1fr) auto; align-items: start; padding: 20px 20px 16px; }
+  .kobo-home__aboutEntry .kobo-home__illustration { display: block; width: 48px; height: 48px; }
   .kobo-home__aboutEntry .kobo-home__cardTitle { font-size: 26px; }
   .kobo-home__aboutEntry .kobo-home__cardCaption { margin-top: 6px; }
   .kobo-home__aboutEntry .kobo-home__cardArrow { align-self: end; }
+  /* 覗くものは全部右へ出す。1行のカードは低いので、積み木・猫・花は小さくして後ろに隠す */
+  .peek-card--about { --leave-x: 84px; }
+  .peek-card--works { --peek-x: 44px; --leave-x: 56px; --peeker-width: 52px; --peek-dir: 1; }
+  .peek-card--blog { --peek-x: 40px; --leave-x: 48px; --peeker-width: 48px; }
+  .peek-card--contact { --peek-x: 26px; --leave-x: 44px; --peeker-width: 36px; --peek-dir: 1; }
+  .peek-card--works .peek-card__character, .peek-card--contact .peek-card__character { right: 8px; left: auto; }
 }
 
-/* 幅の狭いスマホでは、説明が折り返さないよう1行のカードのイラストを外す */
+/* 幅の狭いスマホでは、About me のタイトルが窮屈にならないようカードの中の絵を外す */
 @media (max-width: 350px) {
-  .kobo-home__illustration { display: none; }
+  .kobo-home__aboutEntry .kobo-home__illustration { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .kobo-home__cardFace, .kobo-home__cardArrow { transition: none; }
+  .kobo-home__cardFace, .kobo-home__cardArrow, .kobo-home__illustration { transition: none; }
   .kobo-home__cardLink:hover .kobo-home__cardArrow, .kobo-home__cardLink:focus-visible .kobo-home__cardArrow { translate: none; }
 }
