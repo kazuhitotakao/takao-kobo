@@ -49,8 +49,8 @@ export function WorkCard({ work, variant, detailHref, aboveTheFold = false }: Wo
               fill
               sizes={
                 isFeatured
-                  ? '(min-width: 768px) 680px, 100vw'
-                  : '(min-width: 768px) 324px, (min-width: 640px) 50vw, 100vw'
+                  ? '(min-width: 864px) 760px, 100vw'
+                  : '(min-width: 864px) 364px, (min-width: 640px) 50vw, 100vw'
               }
               loading={aboveTheFold ? 'eager' : undefined}
               fetchPriority={aboveTheFold ? 'high' : undefined}

@@ -50,7 +50,7 @@ async function BlogArticleDetail({ params }: { params: PageProps<'/blog/[id]'>['
               src={article.thumbnail.url}
               alt={article.thumbnail.alt ?? ''}
               fill
-              sizes="(min-width: 768px) 720px, 100vw"
+              sizes="(min-width: 864px) 800px, 100vw"
               loading="eager"
               fetchPriority="high"
               className="object-cover"

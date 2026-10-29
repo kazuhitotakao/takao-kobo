@@ -28,8 +28,8 @@ export function SubPage({
       <SubPageScrollArea className="flex-1 bg-sky-50 pointer-fine:min-h-0 pointer-fine:overflow-y-auto pointer-fine:scrollbar-gutter-stable">
         <PageTransition>
           {/* 本文は右にスクロールバーの幅が空くので、左にも同じだけ（画面が狭くて余白が足りなければその分だけ）あけて、
-              Container（max-w-3xl = 48rem）の位置を Header とそろえる。100vw - 100% がスクロールバーの幅になる */}
-          <main className="py-12 pointer-fine:pl-[min(100vw-100%,max(0px,(100vw-48rem)/2))]">
+              Container（max-w-[54rem]）の位置を Header とそろえる。100vw - 100% がスクロールバーの幅になる */}
+          <main className="py-12 pointer-fine:pl-[min(100vw-100%,max(0px,(100vw-54rem)/2))]">
             <Container>
               {!isDetail && (
                 <h1 className="text-3xl font-bold">

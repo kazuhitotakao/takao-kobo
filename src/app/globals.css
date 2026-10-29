@@ -109,6 +109,20 @@ body {
   animation-name: via-blur;
 }
 
+/* トップと下層ページのヘッダー（同じ name）は、位置や大きさを動かさずに重ねて切り替え、メニューだけがふわっと出入りするようにする。
+   遷移の画像は、あとから現れたもの（下層ページからトップへ戻るときのトップ全体など）ほど上に重なるので、
+   ヘッダーがその背景に隠れないよう、いちばん上に出す */
+::view-transition-group(site-header) {
+  z-index: 1;
+  animation: none;
+}
+/* group の animation を止めると中の画像の切り替えも一瞬になるので、こちらに長さを付ける */
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation-duration: 250ms;
+  animation-fill-mode: both;
+}
+
 @keyframes fade {
   from {
     filter: blur(3px);
