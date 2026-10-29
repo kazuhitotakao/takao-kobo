@@ -7,15 +7,16 @@ import '@/components/home/home-page.css';
 import { PageTransition } from '@/components/page-transition';
 import { menuSlugs } from '@/lib/menu';
 
-const homeTitle = `${siteName} | 一歩ずつ、つくっていく。`;
+const homeShareTitle = '一歩ずつ、つくっていく。';
+const homeTitle = `${siteName} | ${homeShareTitle}`;
 const homeDescription = 'Webエンジニアとしての制作と、日々の記録。';
 const homeMetadata = createPageMetadata({ path: '/', description: homeDescription });
 
 export const metadata: Metadata = {
   ...homeMetadata,
   title: { absolute: homeTitle },
-  openGraph: { ...homeMetadata.openGraph, title: homeTitle },
-  twitter: { ...homeMetadata.twitter, title: homeTitle },
+  openGraph: { ...homeMetadata.openGraph, title: homeShareTitle },
+  twitter: { ...homeMetadata.twitter, title: homeShareTitle },
 };
 
 // スクロールせずに一画面で見渡せるよう、ヘッダー・キャッチコピーと説明文・カードだけを置く。
