@@ -9,6 +9,11 @@ export const menuNames: Record<MenuSlug, string> = {
   contact: 'Contact',
 };
 
+// 下層ページの見出し。指定のないメニューはメニュー名をそのまま使う
+export const menuPageTitles: Partial<Record<MenuSlug, string>> = {
+  about: '私について',
+};
+
 // トップのカードで、英語のメニュー名に添える日本語
 export const menuCaptions: Record<MenuSlug, string> = {
   about: '私について',

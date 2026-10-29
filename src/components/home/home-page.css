@@ -243,11 +243,14 @@
 @keyframes climber-arm-a { 0% { rotate: 0deg; } 4.5% { rotate: -6.8deg; } 12.5% { rotate: -37.8deg; } 14.8% { rotate: -51.9deg; } 16.8% { rotate: -75deg; } 36.8% { rotate: -67.2deg; } 46.3% { rotate: -47.4deg; } 53.5% { rotate: -11.2deg; } 54.5% { rotate: 6.7deg; } 55.5% { rotate: 48.9deg; } 56% { rotate: 60deg; } 80.3% { rotate: 59.8deg; } 84.8% { rotate: 42.3deg; } 87.3% { rotate: -0.1deg; } 88.5% { rotate: -10.6deg; } 97% { rotate: 2.8deg; } 100% { rotate: 0deg; } }
 @keyframes climber-arm-b { 0% { rotate: 0deg; } 6.8% { rotate: 14.5deg; } 13.3% { rotate: 41.4deg; } 15.5% { rotate: 59.8deg; } 40.8% { rotate: 60deg; } 46.5% { rotate: 46.5deg; } 52.8% { rotate: 17.8deg; } 54.3% { rotate: -0.3deg; } 55.5% { rotate: -48.9deg; } 56% { rotate: -60.8deg; } 58.3% { rotate: -70.1deg; } 81% { rotate: -58.3deg; } 84.8% { rotate: -42.3deg; } 87.5% { rotate: 3.6deg; } 88.8% { rotate: 11.2deg; } 97% { rotate: -2.8deg; } 100% { rotate: 0deg; } }
 
-/* スマホは1列。すべてのカードを同じ高さの横並びレイアウトに揃え、右に覗くものが飛び出す分をあける */
-@media (max-width: 620px) {
+/* スマホは1列。すべてのカードを同じ高さの横並びレイアウトに揃え、左に覗くものが飛び出す分をあける */
+@media (max-width: 680px) {
   .kobo-home__shell { width: calc(100% - 40px); }
   .kobo-home__header { padding-block: 10px; }
-  .kobo-home__signature { --staircase-width: clamp(52px, 100dvh - 494px, 120px); }
+  /* 階段の絵は、先にメニューのカードを縮めて（1枚およそ60pxまで）大きさを保ち、それでも高さが足りない画面でだけ縮める
+     （高さ502px以上で120px）。メニューは残りの高さを埋めるので、背の高い画面ではカードがそのぶん伸びる。
+     上の余白は、喜んだときの頭上の効果線がヘッダーにかからない分あけておく */
+  .kobo-home__signature { --staircase-width: clamp(52px, 100dvh - 382px, 120px); margin-top: 10px; }
   .kobo-home__signatureLabel { margin-left: -8px; font-size: min(13px, var(--staircase-width) * 13 / 120); line-height: 19.5px; }
   .kobo-home__staircase { margin-top: -2px; }
   .kobo-home__main { gap: clamp(12px, 2.5dvh, 40px); padding-block: clamp(12px, 2.5dvh, 40px); }
@@ -256,19 +259,22 @@
   /* すべての行を同じ比率で伸ばし、カードの高さを均等にする */
   .kobo-home__cardGrid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-rows: 1fr; gap: 8px; }
   /* どのカードもタイトル・説明・矢印を横に並べ、カード内の絵は非表示にする */
-  /* 左右の余白を均等にして中央へ。右側にはイラストが飛び出す分の余白も確保する */
+  /* 左右の余白を均等にして中央へ。左側にはイラストが飛び出す分の余白も確保する */
   .kobo-home__cardLink { width: calc(100% - 64px); margin-inline: auto; }
   .kobo-home__cardFace { min-height: 52px; grid-template: "title caption arrow" / auto minmax(0, 1fr) auto; align-items: center; column-gap: 12px; padding: 8px 16px; }
   .kobo-home__cardTitle { font-size: 20px; }
   .kobo-home__cardCaption { margin-top: 0; font-size: 13px; }
   .kobo-home__illustration { display: none; }
   .kobo-home__cardArrow { align-self: center; font-size: 18px; }
-  /* 覗くものは全部右へ出す。低いカードの後ろに隠れる大きさにし、人物の振る手も画面内に収める */
+  /* 覗くものは全部カードの左端から左へ出す（右手の親指でカードの右側を押しても、指に隠れにくい）。
+     絵は左右反転して、人物の顔と振る手・猫の顔を外側（左）に向ける。反転は transform ではなく個別の scale で付ける。
+     scale は transform より内側で効くので、右へ出す動き（translateX・rotate）がそのまま鏡写しになって左へ出る。
+     そのため --peek-dir は 1 のままにする。低いカードの後ろに隠れる大きさにし、人物の振る手も画面内に収める */
+  .peek-card__character { right: auto; left: 8px; scale: -1 1; }
   .peek-card--about { --peek-x: 20px; --leave-x: 28px; --peeker-width: 30px; }
   .peek-card--works { --peek-x: 44px; --leave-x: 56px; --peeker-width: 52px; --peek-dir: 1; }
   .peek-card--blog { --peek-x: 40px; --leave-x: 48px; --peeker-width: 48px; }
   .peek-card--contact { --peek-x: 26px; --leave-x: 44px; --peeker-width: 36px; --peek-dir: 1; }
-  .peek-card--works .peek-card__character, .peek-card--contact .peek-card__character { right: 8px; left: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
