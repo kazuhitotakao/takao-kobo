@@ -12,7 +12,7 @@ export const menuNames: Record<MenuSlug, string> = {
 // トップのカードで、英語のメニュー名に添える日本語
 export const menuCaptions: Record<MenuSlug, string> = {
   about: '私について',
-  works: 'つくってきたもの',
+  works: 'Webアプリ・制作物',
   blog: '日々の記録',
   contact: 'お問い合わせ',
 };
