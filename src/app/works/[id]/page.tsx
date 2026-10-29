@@ -157,7 +157,7 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
       </div>
 
       <div className="mt-16 border-t border-sky-200 pt-8 sm:mt-20">
-        <BackLink href="/works">Works一覧へ戻る</BackLink>
+        <BackLink href="/works" restoreScroll>Works一覧へ戻る</BackLink>
       </div>
     </article>
   );
@@ -181,7 +181,7 @@ function WorkDetailFallback() {
 export default function WorkDetailPage({ params }: PageProps<'/works/[id]'>) {
   return (
     <SubPage slug="works" isDetail>
-      <BackLink href="/works">Works一覧へ戻る</BackLink>
+      <BackLink href="/works" restoreScroll>Works一覧へ戻る</BackLink>
       <Suspense fallback={<WorkDetailFallback />}>
         <WorkDetail params={params} />
       </Suspense>

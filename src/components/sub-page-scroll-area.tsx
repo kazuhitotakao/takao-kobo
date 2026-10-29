@@ -1,30 +1,18 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
+import { takeScrollRestoration } from '@/lib/scroll-restoration';
 
 // マウスで操作する画面（pointer: fine）で、下層ページの Header の下の本文だけをスクロールさせる要素（SubPage から使う）。
 // ページ全体ではなくこの要素がスクロールするので、ふだんブラウザがしてくれることをここで補う。
-// - 戻る・進むやリロードで来たときに、前に見ていた位置まで戻す
+// - 一覧へ戻るリンク・ブラウザの戻る・進む・リロードで、前に見ていた位置まで戻す
 // - Header のリンクなど本文の外にフォーカスがあっても、キーボードで本文をスクロールできるようにする
-// スマホなど指で操作する画面ではページ全体がスクロールし、この要素はスクロールしないので、どちらもブラウザに任せる
+// スマホなど指で操作する画面では、ページ全体のスクロール位置を保存・復元する
 
 const storageKeyPrefix = 'sub-page-scroll:';
 
 function currentUrl() {
   return location.pathname + location.search;
-}
-
-// 位置を戻すページの URL。戻る・進む（popstate）と、リロードなどで開き直したページを入れ、次に表示したときに使い切る
-let restoreTarget: string | null = null;
-if (typeof window !== 'undefined') {
-  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
-  if (navigation?.type === 'reload' || navigation?.type === 'back_forward') {
-    const url = new URL(navigation.name);
-    restoreTarget = url.pathname + url.search;
-  }
-  window.addEventListener('popstate', () => {
-    restoreTarget = currentUrl();
-  });
 }
 
 function readScrollTop(key: string) {
@@ -44,20 +32,38 @@ function writeScrollTop(key: string, scrollTop: number) {
 }
 
 // 記事の本文など、あとから読み込まれて高さが伸びる途中だと届かないので、伸びるたびに少しのあいだ合わせ直す
-function restoreScrollTop(scrollArea: HTMLElement, top: number) {
-  scrollArea.scrollTop = top;
-  const content = scrollArea.firstElementChild;
-  if (scrollArea.scrollTop >= top - 1 || !content) {
-    return;
-  }
-  const observer = new ResizeObserver(() => {
-    scrollArea.scrollTop = top;
-    if (scrollArea.scrollTop >= top - 1) {
-      observer.disconnect();
-    }
+function restoreScrollTop(scrollArea: HTMLElement, content: Element | null, top: number, onFinish: () => void) {
+  const apply = () => { scrollArea.scrollTop = top; };
+  apply();
+  // スマホではブラウザ自身の復元が後から走るので、描画後・load後にも合わせる。
+  let secondFrame: number | undefined;
+  const firstFrame = window.requestAnimationFrame(() => {
+    apply();
+    secondFrame = window.requestAnimationFrame(apply);
   });
-  observer.observe(content);
-  window.setTimeout(() => observer.disconnect(), 1000);
+  const observer = new ResizeObserver(apply);
+  if (content) observer.observe(content);
+  window.addEventListener('load', apply, { once: true });
+  const cleanup = () => {
+    observer.disconnect();
+    window.cancelAnimationFrame(firstFrame);
+    if (secondFrame !== undefined) window.cancelAnimationFrame(secondFrame);
+    window.clearTimeout(timer);
+    window.removeEventListener('load', apply);
+    window.removeEventListener('wheel', stop);
+    window.removeEventListener('touchstart', stop);
+    window.removeEventListener('keydown', stop);
+  };
+  const stop = () => {
+    cleanup();
+    onFinish();
+  };
+  const timer = window.setTimeout(stop, 3000);
+  // 復元待ちの途中で操作されたら、それ以降はユーザーのスクロールを優先する。
+  window.addEventListener('wheel', stop, { passive: true });
+  window.addEventListener('touchstart', stop, { passive: true });
+  window.addEventListener('keydown', stop);
+  return cleanup;
 }
 
 // ブラウザのキーボードスクロールに合わせた移動量。対象外のキーなら null
@@ -90,6 +96,7 @@ function keyScrollDistance(event: KeyboardEvent, scrollArea: HTMLElement) {
 
 export function SubPageScrollArea({ className, children }: { className: string; children: ReactNode }) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const restorationRef = useRef<{ url: string; top: number } | null>(null);
 
   // 描画の前に位置を戻し、ページ遷移のアニメーションにも戻した位置で写るようにする
   useLayoutEffect(() => {
@@ -98,27 +105,66 @@ export function SubPageScrollArea({ className, children }: { className: string; 
       return;
     }
 
+    const useWindowScroll = !window.matchMedia('(pointer: fine)').matches;
+    const scrollElement = useWindowScroll ? document.scrollingElement : scrollArea;
+    if (!(scrollElement instanceof HTMLElement)) return;
+    const scrollTarget = useWindowScroll ? window : scrollArea;
+    const content = useWindowScroll ? document.body : scrollArea.firstElementChild;
     const url = currentUrl();
     const key = storageKeyPrefix + url;
-    if (restoreTarget === url) {
-      restoreScrollTop(scrollArea, readScrollTop(key));
+    if (restorationRef.current?.url !== url) restorationRef.current = null;
+    if (takeScrollRestoration(url)) {
+      restorationRef.current = { url, top: readScrollTop(key) };
     }
-    restoreTarget = null;
+    // 読み込み中の再描画やStrict Modeの再実行でも、復元先の位置を保持する。
+    const restoration = restorationRef.current;
+    const stopRestoring = restoration
+      ? restoreScrollTop(scrollElement, content, restoration.top, () => { restorationRef.current = null; })
+      : undefined;
 
     let saveTimer: number | undefined;
+    let savedTop = scrollElement.scrollTop;
+    let isLeaving = false;
+    const savePosition = () => writeScrollTop(key, restorationRef.current?.top ?? savedTop);
     const save = () => {
+      if (isLeaving) return;
+      savedTop = scrollElement.scrollTop;
       window.clearTimeout(saveTimer);
-      saveTimer = window.setTimeout(() => writeScrollTop(key, scrollArea.scrollTop), 100);
+      saveTimer = window.setTimeout(savePosition, 100);
     };
-    scrollArea.addEventListener('scroll', save, { passive: true });
+    // スマホでは遷移先も同じdocumentを使うため、切り替え後の位置で元の保存値を上書きしない。
+    const freezePosition = () => {
+      isLeaving = true;
+      window.clearTimeout(saveTimer);
+      savePosition();
+    };
+    const handleLinkClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+      if (!(link instanceof HTMLAnchorElement) || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+      const destination = new URL(link.href);
+      if (destination.origin !== location.origin || destination.pathname + destination.search === url) return;
+      savedTop = scrollElement.scrollTop;
+      freezePosition();
+    };
+    scrollTarget.addEventListener('scroll', save, { passive: true });
+    document.addEventListener('click', handleLinkClick, true);
+    window.addEventListener('popstate', freezePosition);
+    window.addEventListener('pagehide', savePosition);
 
     return () => {
-      scrollArea.removeEventListener('scroll', save);
+      scrollTarget.removeEventListener('scroll', save);
+      document.removeEventListener('click', handleLinkClick, true);
+      window.removeEventListener('popstate', freezePosition);
+      window.removeEventListener('pagehide', savePosition);
       window.clearTimeout(saveTimer);
+      stopRestoring?.();
       // ページを離れる直前の位置も残す
-      writeScrollTop(key, scrollArea.scrollTop);
+      savePosition();
+      if (isLeaving) restorationRef.current = null;
     };
-  }, []);
+    // クエリだけ変わったときも、保存先を新しいカテゴリ・ページ番号のURLに切り替える。
+  });
 
   useEffect(() => {
     const scrollArea = scrollAreaRef.current;
