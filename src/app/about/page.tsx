@@ -34,7 +34,7 @@ export default function AboutPage() {
           <p>そんな思いを「Step by Step」という言葉に込めています。</p>
         </AboutSection>
 
-        <AboutSection title="自分について">
+        <AboutSection title="自己紹介">
           <div className="flex flex-col items-center gap-6 sm:gap-8">
             <div className="w-24 shrink-0 text-navy sm:w-28" aria-hidden="true">
               <CharacterIcon />
