@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-// 詳細ページから一覧へ戻るリンク
+// 詳細ページから一覧へ、404 やエラーのページからトップへ戻るリンク
 export function BackLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
