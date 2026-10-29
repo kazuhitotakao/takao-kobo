@@ -8,6 +8,7 @@ import { menuNames, type MenuSlug } from '@/lib/menu';
 // トップには Header を出さないので、下層ページだけここで描画する。
 // 下層ページ同士の遷移で Header と背景がスライドしないよう PageTransition の外に置く。
 // 作品詳細のような一覧の下のページ（isDetail）では、メニュー名の見出しを出さず、h1 は children 側で描画する。
+// 404 やエラーのようにどのメニューにも属さないページは slug を渡さず、h1 は children 側で描画する。
 // マウスで操作する画面（pointer: fine）では、画面の高さに収めて Header の下の本文だけをスクロールさせ、
 // 縦のスクロールバーを Header の横に出さない。本文側はスクロールバーの幅をいつも空けておき（scrollbar-gutter）、
 // 本文の長さでスクロールバーが出たり消えたりしても、Header も本文も横にずれないようにする。
@@ -18,7 +19,7 @@ export function SubPage({
   isDetail = false,
   children,
 }: {
-  slug: MenuSlug;
+  slug?: MenuSlug;
   isDetail?: boolean;
   children: ReactNode;
 }) {
@@ -31,7 +32,7 @@ export function SubPage({
               Container（max-w-[54rem]）の位置を Header とそろえる。100vw - 100% がスクロールバーの幅になる */}
           <main className="py-12 pointer-fine:pl-[min(100vw-100%,max(0px,(100vw-54rem)/2))]">
             <Container>
-              {!isDetail && (
+              {slug && !isDetail && (
                 <h1 className="text-3xl font-bold">
                   <MenuTitle slug={slug}>{menuNames[slug]}</MenuTitle>
                 </h1>
