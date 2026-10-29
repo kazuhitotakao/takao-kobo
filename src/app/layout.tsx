@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { createPageMetadata, siteDescription, siteName, siteUrl } from "@/lib/metadata";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,8 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "髙尾工房",
-  description: "一歩ずつ、つくっていく。つくること、暮らすことを記録する小さな工房。",
+  ...createPageMetadata({ path: '/' }),
+  metadataBase: siteUrl,
+  title: { default: siteName, template: `%s | ${siteName}` },
+  description: siteDescription,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

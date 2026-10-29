@@ -1,3 +1,4 @@
+import { createPageMetadata } from '@/lib/metadata';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -19,7 +20,15 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<'/blog/[id]'>): Promise<Metadata> {
   const { id } = await params;
   const article = await getBlogArticle(id);
-  return article ? { title: `${article.title} | 髙尾工房`, description: article.summary } : {};
+  if (!article) return { title: 'ページが見つかりません', robots: { index: false } };
+  return createPageMetadata({
+    title: article.title,
+    description: article.summary,
+    path: `/blog/${article.id}`,
+    image: article.thumbnail,
+    publishedTime: article.publishedAt ?? article.createdAt,
+    modifiedTime: article.updatedAt,
+  });
 }
 
 async function BlogArticleDetail({ params }: { params: PageProps<'/blog/[id]'>['params'] }) {

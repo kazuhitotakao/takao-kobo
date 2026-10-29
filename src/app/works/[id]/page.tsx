@@ -1,3 +1,4 @@
+import { createPageMetadata } from '@/lib/metadata';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -21,7 +22,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<'/works/[id]'>): Promise<Metadata> {
   const { id } = await params;
   const work = await getWork(id);
-  return work ? { title: `${work.title} | 髙尾工房`, description: work.summary } : {};
+  if (!work) return { title: 'ページが見つかりません', robots: { index: false } };
+  return createPageMetadata({
+    title: work.title,
+    description: work.summary,
+    path: `/works/${work.id}`,
+    image: work.thumbnail,
+  });
 }
 
 function DetailSection({ title, children }: { title: string; children: ReactNode }) {
