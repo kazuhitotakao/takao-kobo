@@ -14,6 +14,9 @@ import { menuNames, type MenuSlug } from '@/lib/menu';
 // 本文の長さでスクロールバーが出たり消えたりしても、Header も本文も横にずれないようにする。
 // スマホなど指で操作する画面は、スクロールバーが幅を取らないので、ページ全体をスクロールさせて Header を上に貼り付ける
 // （アドレスバーが縮む・戻ったときにスクロール位置が戻るなど、ブラウザの動きをそのまま使う）
+// いちばん下のリンクやボタン（詳細ページの「一覧へ戻る」など）がスマホのブラウザの操作バーに近づかないよう、
+// 680px 以下では下の余白を 96px に広げる。ホームインジケーターの分（safe-area-inset-bottom）も足すが、
+// viewport-fit=cover にしていない今は 0 になる
 export function SubPage({
   slug,
   isDetail = false,
@@ -30,7 +33,7 @@ export function SubPage({
         <PageTransition>
           {/* 本文は右にスクロールバーの幅が空くので、左にも同じだけ（画面が狭くて余白が足りなければその分だけ）あけて、
               Container（max-w-[54rem]）の位置を Header とそろえる。100vw - 100% がスクロールバーの幅になる */}
-          <main className="py-12 pointer-fine:pl-[min(100vw-100%,max(0px,(100vw-54rem)/2))]">
+          <main className="py-12 pointer-fine:pl-[min(100vw-100%,max(0px,(100vw-54rem)/2))] max-[681px]:pb-[calc(96px+env(safe-area-inset-bottom,0px))]">
             <Container>
               {slug && !isDetail && (
                 <h1 className="text-3xl font-bold">
