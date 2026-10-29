@@ -8,13 +8,13 @@ const focusOutlineClassName = 'focus-visible:outline-2 focus-visible:outline-off
 // 各ページの h1 と重ならないよう、工房名は見出しにせずリンクだけにする。
 // currentSlug のメニューを今いる場所として色付けする。作品詳細のような一覧の下のページ（isDetail）は
 // メニューのページそのものではないので、aria-current を page ではなく true にする。
-// 上下の余白・白い背景・グレーの下線はトップのヘッダー（home-page.css の .kobo-home__header）とそろえる。
+// 上下の余白はトップのヘッダーとそろえ、背景と境界線は共通の site-header で淡い水色にする。
 // スマホではページ全体がスクロールするので上に貼り付ける（SubPage を参照）。
 // view-transition-name はトップのヘッダーと同じにして、トップとの行き来でもロゴをその場に留める。
 // あわせて、スクロールした本文の画像がページ遷移中にヘッダーの上に重ならないよう、ヘッダーを手前に描かせる
 export function Header({ currentSlug, isDetail = false }: { currentSlug?: MenuSlug; isDetail?: boolean }) {
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white [view-transition-name:site-header]">
+    <header className="site-header sticky top-0 z-20 [view-transition-name:site-header]">
       <Container className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-2.5 min-[621px]:py-3">
         <Link
           href="/"
