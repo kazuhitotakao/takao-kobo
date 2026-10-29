@@ -17,6 +17,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   ...createPageMetadata({ path: '/' }),
   metadataBase: siteUrl,
+  applicationName: siteName,
+  appleWebApp: { title: siteName, capable: false },
   title: { default: siteName, template: `%s | ${siteName}` },
   description: siteDescription,
   // Google Search Console の所有権確認（HTMLタグ方式）。消すと確認が外れるので残しておく
