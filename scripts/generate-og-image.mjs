@@ -31,7 +31,7 @@ const image = new ImageResponse(
             h('path', { d: 'M18 17H29V24H18ZM31 11.4V6H37V16.2' }),
           ),
         ),
-        h('div', { style: { display: 'flex', flexDirection: 'column' } },
+        h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
           h('div', { style: { fontSize: 68, letterSpacing: 8, lineHeight: 1.2 } }, title),
           h('div', { style: { fontSize: 19, letterSpacing: 7, marginTop: 10 } }, 'TAKAO KOBO'),
         ),

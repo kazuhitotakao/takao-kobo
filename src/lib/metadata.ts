@@ -21,7 +21,7 @@ export function createPageMetadata({
   modifiedTime?: string;
 }): Metadata {
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
-  const sharedImage = image ?? { url: '/og-image.png', width: 1200, height: 630, alt: '髙尾工房 — 一歩ずつ、つくっていく。' };
+  const sharedImage = image ?? { url: '/og-image.png?v=2', width: 1200, height: 630, alt: '髙尾工房 — 一歩ずつ、つくっていく。' };
 
   return {
     ...(title ? { title } : {}),
