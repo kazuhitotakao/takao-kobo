@@ -63,3 +63,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 公式資料：
 - [導入手順](https://vercel.com/docs/analytics/quickstart)
 - [管理画面の使い方・アクセス元・期間指定](https://vercel.com/docs/analytics/using-web-analytics)
+
+## 検索・SNS共有の設定
+
+- 本番URLは `src/lib/metadata.ts` の `siteUrl`（`https://takao-kobo.vercel.app/`）で管理しています。独自ドメインへ移行する場合はここを更新してください。
+- 固定ページと記事・作品詳細に固有のタイトル、説明、canonical、Open Graph、Xカードを設定しています。
+- 共通の共有画像は `public/og-image.png`（1200×630）。記事・作品詳細はサムネイルがあれば優先して使用します。
+- 共有画像の再生成は `node scripts/generate-og-image.mjs`。必要な文字の日本語フォントを取得するため、生成時のみネットワーク接続が必要です。表示・デプロイ時には不要です。
+- `/sitemap.xml` に固定ページと全公開記事・作品を掲載します。詳細の更新日時はmicroCMSの `updatedAt` を使用します。CMSの取得結果は分単位でキャッシュされます。
+- `/robots.txt` にサイトマップURLを記載しています。ブログ一覧のcanonicalにはページ番号・有効なカテゴリを保持します。記事・作品詳細のcanonicalには一覧への戻り先などのクエリを含めません。サイトマップには固定ページと詳細ページを掲載します。
+- 公開後、各ページのHTMLでtitle・description・canonical・OGPタグを確認し、共有画像URLと `/sitemap.xml`・`/robots.txt` が正常に開くことを確認してください。
+- ブラウザ用アイコンは `src/app/favicon.ico`（16/32/48px）、Appleホーム画面用は `src/app/apple-icon.png`（180px）です。Next.jsのファイル規約で各ページに自動設定されます。
+- 工房ロゴからの再生成は `node scripts/generate-icons.mjs`。追加パッケージや外部フォントは不要です。

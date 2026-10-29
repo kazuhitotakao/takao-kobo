@@ -1,6 +1,13 @@
+import { createPageMetadata } from '@/lib/metadata';
 import type { ReactNode } from 'react';
 import { CharacterIcon } from '@/components/home/character';
 import { SubPage } from '@/components/sub-page';
+
+export const metadata = createPageMetadata({
+  title: 'About me',
+  description: '髙尾工房について。市役所職員からWebエンジニアへの歩みや、ものづくりへの思い、釣り・家庭菜園などの趣味を紹介します。',
+  path: '/about',
+});
 
 function AboutSection({ title, children }: { title: string; children: ReactNode }) {
   return (

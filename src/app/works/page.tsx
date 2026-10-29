@@ -1,7 +1,14 @@
+import { createPageMetadata } from '@/lib/metadata';
 import type { ReactNode } from 'react';
 import { SubPage } from '@/components/sub-page';
 import { WorkCard } from '@/components/work-card';
 import { getWorks } from '@/lib/works';
+
+export const metadata = createPageMetadata({
+  title: 'Works',
+  description: '個人開発のアプリや学習で制作した作品を紹介します。一歩ずつ学びながら、つくってきたものをまとめています。',
+  path: '/works',
+});
 
 function WorksSection({ title, children }: { title: string; children: ReactNode }) {
   return (

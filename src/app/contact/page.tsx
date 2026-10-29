@@ -1,4 +1,11 @@
+import { createPageMetadata } from '@/lib/metadata';
 import { SubPage } from '@/components/sub-page';
+
+export const metadata = createPageMetadata({
+  title: 'Contact',
+  description: '髙尾工房へのお問い合わせ。お仕事のご相談や、制作したアプリ・作品についてのご質問はこちらからご連絡ください。',
+  path: '/contact',
+});
 
 // 問い合わせ先のメールアドレス（空にするとメールリンクを出さない）
 const contactEmail: string = 'simasyamu@gmail.com';

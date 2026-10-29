@@ -1,3 +1,4 @@
+import { createPageMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -6,12 +7,26 @@ import { SubPage } from '@/components/sub-page';
 import { BLOG_PAGE_SIZE, formatDate, getBlogArticles, getBlogCategories } from '@/lib/blog';
 import { blogListHref, parseBlogPage } from '@/lib/blog-navigation';
 
-async function BlogList({ searchParams }: { searchParams: PageProps<'/blog'>['searchParams'] }) {
+async function resolveBlogQuery(searchParams: PageProps<'/blog'>['searchParams']) {
   const [query, categories] = await Promise.all([searchParams, getBlogCategories()]);
-  const category = typeof query.category === 'string' && categories.includes(query.category) ? query.category : '';
-  const page = parseBlogPage(query.page);
-  // filtersに式を差し込める文字はmicroCMS側でエスケープできないため、送信しない。
-  if (category.includes('[') || category.includes(']')) redirect('/blog');
+  const value = typeof query.category === 'string' ? query.category : '';
+  // filtersでエスケープできない記号は受け付けず、公開記事で使用中のカテゴリだけを使う。
+  const category = categories.includes(value) && !value.includes('[') && !value.includes(']') ? value : '';
+  return { categories, category, page: parseBlogPage(query.page) };
+}
+
+export async function generateMetadata({ searchParams }: PageProps<'/blog'>) {
+  const { category, page } = await resolveBlogQuery(searchParams);
+  const title = ['Blog', category, page > 1 ? `${page}ページ目` : ''].filter(Boolean).join(' - ');
+  return createPageMetadata({
+    title,
+    description: 'Web開発で学んだことや、釣り・家庭菜園など、日々の出来事を記録する髙尾工房のブログです。',
+    path: blogListHref(page, category),
+  });
+}
+
+async function BlogList({ searchParams }: { searchParams: PageProps<'/blog'>['searchParams'] }) {
+  const { categories, category, page } = await resolveBlogQuery(searchParams);
   const { contents: blogArticles, totalCount } = await getBlogArticles(page, category);
   const pageCount = Math.max(1, Math.ceil(totalCount / BLOG_PAGE_SIZE));
   if (page > pageCount) redirect(blogListHref(pageCount, category));
