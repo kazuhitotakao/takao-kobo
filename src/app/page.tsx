@@ -16,7 +16,6 @@ export default function HomePage() {
             <section className="kobo-home__hero" aria-labelledby="home-title">
               <StepByStep />
               <h1 id="home-title" className="kobo-home__heroTitle">一歩ずつ、つくっていく。</h1>
-              <p className="kobo-home__heroCopy">考えて、試して、ときどき寄り道。</p>
             </section>
             <nav className="kobo-home__menu" aria-label="メインメニュー">
               <ul className="kobo-home__cardGrid">

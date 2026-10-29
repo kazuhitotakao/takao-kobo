@@ -66,7 +66,7 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
             src={work.thumbnail.url}
             alt={work.thumbnail.alt ?? ''}
             fill
-            sizes="(min-width: 768px) 720px, 100vw"
+            sizes="(min-width: 864px) 800px, 100vw"
             loading="eager"
             fetchPriority="high"
             className="object-cover"
