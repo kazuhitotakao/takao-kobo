@@ -15,10 +15,11 @@ const focusOutlineClassName = 'focus-visible:outline-2 focus-visible:outline-off
 export function Header({ currentSlug, isDetail = false }: { currentSlug?: MenuSlug; isDetail?: boolean }) {
   return (
     <header className="site-header sticky top-0 z-20 [view-transition-name:site-header]">
-      <Container className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-2.5 min-[621px]:py-3">
+      <Container className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-2.5 min-[681px]:py-3">
+        {/* トップへ戻るときは、見出しがトップのカードへ移動する（menu-title は menu-card.tsx を参照） */}
         <Link
           href="/"
-          transitionTypes={['nav-back']}
+          transitionTypes={['nav-back', 'menu-title']}
           className={`flex rounded-sm text-navy transition-colors hover:text-sky-700 ${focusOutlineClassName}`}
         >
           <Logo />
