@@ -46,7 +46,7 @@ async function BlogArticleDetail({ params }: { params: PageProps<'/blog/[id]'>['
       <ShowEndWhenTall
         end={
           <div className="mt-16 border-t border-sky-200 pt-8 sm:mt-20">
-            <Suspense fallback={<BackLink href="/blog">Blog一覧へ戻る</BackLink>}><BlogBackLink /></Suspense>
+            <Suspense fallback={<BackLink href="/blog" restoreScroll>Blog一覧へ戻る</BackLink>}><BlogBackLink /></Suspense>
           </div>
         }
       >
@@ -100,7 +100,7 @@ function BlogArticleFallback() {
 export default function BlogArticlePage({ params }: PageProps<'/blog/[id]'>) {
   return (
     <SubPage slug="blog" isDetail>
-      <Suspense fallback={<BackLink href="/blog">Blog一覧へ戻る</BackLink>}><BlogBackLink /></Suspense>
+      <Suspense fallback={<BackLink href="/blog" restoreScroll>Blog一覧へ戻る</BackLink>}><BlogBackLink /></Suspense>
       <Suspense fallback={<BlogArticleFallback />}>
         <BlogArticleDetail params={params} />
       </Suspense>
