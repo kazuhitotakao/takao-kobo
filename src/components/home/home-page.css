@@ -12,11 +12,6 @@
    伸ばしきってもまだ余るときだけ、その分を上下に振り分ける */
 .kobo-home__shell { display: flex; min-height: 100dvh; width: min(800px, calc(100% - 64px)); flex-direction: column; margin-inline: auto; }
 .kobo-home__header { display: flex; align-items: center; padding-block: 12px; border-bottom: 1px solid #e2e8f0; }
-.kobo-home__brand { display: inline-flex; flex-shrink: 0; align-items: center; gap: 10px; }
-.kobo-home__brand > svg { width: 36px; height: 36px; }
-.kobo-home__brand strong { display: block; font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif; font-size: 21px; font-weight: 800; line-height: 1.35; letter-spacing: .16em; white-space: nowrap; }
-.kobo-home__brand small { display: block; margin-top: 3px; font-size: 8px; font-weight: 700; letter-spacing: .29em; }
-.kobo-home__brand > span { text-align: center; }
 .kobo-home__main { display: flex; flex: 1; flex-direction: column; justify-content: center; gap: clamp(16px, 4dvh, 56px); padding-block: clamp(12px, 3dvh, 32px); }
 .kobo-home__menu { display: flex; flex: 1; max-height: 480px; }
 .kobo-home__hero { text-align: center; }
@@ -101,10 +96,6 @@
 @media (max-width: 620px) {
   .kobo-home__shell { width: calc(100% - 40px); }
   .kobo-home__header { padding-block: 10px; }
-  .kobo-home__brand { gap: 8px; }
-  .kobo-home__brand > svg { width: 30px; height: 30px; }
-  .kobo-home__brand strong { font-size: 18px; }
-  .kobo-home__brand small { font-size: 7px; }
   .kobo-home__signatureLabel { margin-left: -8px; font-size: 13px; }
   .kobo-home__staircase { width: clamp(52px, 100dvh - 494px, 120px); margin-top: -2px; }
   .kobo-home__main { gap: clamp(12px, 2.5dvh, 40px); padding-block: clamp(12px, 2.5dvh, 40px); }
