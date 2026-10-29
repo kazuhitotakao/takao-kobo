@@ -86,7 +86,7 @@ Docker Compose（VS CodeのDev Container）で開発します。
 
 - 本番URLは `src/lib/metadata.ts` の `siteUrl`（`https://takao-kobo.vercel.app/`）で管理しています。独自ドメインへ移行する場合はここを更新してください。
 - 固定ページと記事・作品詳細に固有のタイトル、説明、canonical、Open Graph、Xカードを設定しています。
-- 共通の共有画像は `public/og-image.png`（1200×630）。記事・作品詳細はサムネイルがあれば優先して使用します。
+- 共通の共有画像は `public/og-image.png`（1200×630）。共有URLはキャッシュ更新用に `/og-image.png?v=2` としています。記事・作品詳細はサムネイルがあれば優先して使用します。
 - 共有画像の再生成は `node scripts/generate-og-image.mjs`。必要な文字の日本語フォントを取得するため、生成時のみネットワーク接続が必要です。表示・デプロイ時には不要です。
 - `/sitemap.xml` に固定ページと全公開記事・作品を掲載します。詳細の更新日時はmicroCMSの `updatedAt` を使用します。CMSの取得結果は分単位でキャッシュされます。
 - `/robots.txt` にサイトマップURLを記載しています。ブログ一覧のcanonicalにはページ番号・有効なカテゴリを保持します。記事・作品詳細のcanonicalには一覧への戻り先などのクエリを含めません。サイトマップには固定ページと詳細ページを掲載します。
