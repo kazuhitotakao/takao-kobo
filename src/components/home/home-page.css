@@ -29,6 +29,7 @@
 .kobo-home__staircase { display: block; width: var(--staircase-width); height: auto; margin-top: -4px; }
 /* 字間を最後の文字のあとにも足すので、左にも同じだけあけて中央に揃える */
 .kobo-home__heroTitle { padding-left: .12em; font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif; font-size: clamp(28px, min(3.4vw, 6dvh), 40px); font-weight: 600; line-height: 1.5; letter-spacing: .12em; }
+.kobo-home__heroDescription { max-width: 36em; margin: 8px auto 0; color: #64748b; font-size: clamp(13px, 2.8vw, 16px); line-height: 1.8; text-wrap: balance; }
 /* 列の間は、左右のカードの後ろから覗くものが飛び出す場所なので、下の --leave-x より広くあける */
 .kobo-home__cardGrid { display: grid; flex: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 16px 104px; margin: 0; padding: 0; list-style: none; }
 .kobo-home__cardGrid > li { min-width: 0; }
@@ -275,6 +276,11 @@
   .peek-card--works { --peek-x: 44px; --leave-x: 56px; --peeker-width: 52px; --peek-dir: 1; }
   .peek-card--blog { --peek-x: 40px; --leave-x: 48px; --peeker-width: 48px; }
   .peek-card--contact { --peek-x: 26px; --leave-x: 44px; --peeker-width: 36px; --peek-dir: 1; }
+}
+
+/* 小さい画面でも「Webアプリ」の途中で折り返さないよう、補足文の字間を抑える */
+@media (max-width: 360px) {
+  .peek-card--works .kobo-home__cardCaption { letter-spacing: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
