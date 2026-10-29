@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { CharacterIcon } from '@/components/home/character';
 import { SubPage } from '@/components/sub-page';
 
 function AboutSection({ title, children }: { title: string; children: ReactNode }) {
@@ -27,10 +28,17 @@ export default function AboutPage() {
         </AboutSection>
 
         <AboutSection title="自分について">
-          <p>約12年間、市役所で働いた後、Webエンジニアに転身しました。</p>
-          <p>これまでNuxt・VueやLaravelを使ったWebシステムの開発・改修に携わってきました。</p>
-          <p>新しいものを作ることはもちろん、既存の仕組みを改善していくことも好きです。</p>
-          <p>仕事以外では、釣りや家庭菜園などを楽しんでいます。</p>
+          <div className="flex flex-col items-center gap-6 sm:gap-8">
+            <div className="w-24 shrink-0 text-navy sm:w-28" aria-hidden="true">
+              <CharacterIcon />
+            </div>
+            <div className="w-full min-w-0 space-y-5">
+              <p>約12年間、市役所で働いた後、Webエンジニアに転身しました。</p>
+              <p>これまでNuxt・VueやLaravelを使ったWebシステムの開発・改修に携わってきました。</p>
+              <p>新しいものを作ることはもちろん、既存の仕組みを改善していくことも好きです。</p>
+              <p>仕事以外では、釣りや家庭菜園などを楽しんでいます。</p>
+            </div>
+          </div>
         </AboutSection>
 
         <AboutSection title="これから">
