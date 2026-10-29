@@ -31,7 +31,7 @@ export function WorkCard({ work, variant, detailHref, aboveTheFold = false }: Wo
 
   return (
     <article
-      className={`relative flex h-full flex-col overflow-hidden border border-sky-100 bg-white shadow-sm transition duration-200 hover:border-sky-300 hover:shadow-md motion-reduce:transition-none ${
+      className={`relative flex h-full flex-col overflow-hidden border-2 border-sky-300 bg-white shadow-sm transition duration-200 hover:border-sky-500 hover:shadow-md focus-within:border-sky-500 motion-reduce:transition-none ${
         isFeatured ? 'rounded-2xl' : 'rounded-xl'
       }`}
     >
