@@ -1,17 +1,34 @@
+import { HomeHeader } from '@/components/home/home-header';
+import { MenuCard } from '@/components/home/menu-card';
+import { StepByStep } from '@/components/home/step-by-step';
+import '@/components/home/home-page.css';
+import { PageTransition } from '@/components/page-transition';
+import { menuSlugs } from '@/lib/menu';
+
+// スクロールせずに一画面で見渡せるよう、ヘッダー・キャッチコピー・カードだけを置く。
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-amber-50 px-6 py-16 text-stone-800">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="text-4xl font-bold">髙尾工房</h1>
-        <p className="mt-4">つくること、暮らすことを記録する小さな工房。</p>
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-          {['About me', 'Works', 'Blog', 'Contact'].map((menuName) => (
-            <li key={menuName} className="rounded-xl bg-white p-6 shadow-sm">
-              {menuName}
-            </li>
-          ))}
-        </ul>
+    <PageTransition>
+      <div className="kobo-home__home">
+        <div className="kobo-home__shell">
+          <HomeHeader />
+          <main className="kobo-home__main">
+            <section className="kobo-home__hero" aria-labelledby="home-title">
+              <StepByStep />
+              <h1 id="home-title" className="kobo-home__heroTitle">一歩ずつ、つくっていく。</h1>
+            </section>
+            <nav className="kobo-home__menu" aria-label="メインメニュー">
+              <ul className="kobo-home__cardGrid">
+                {menuSlugs.map((slug) => (
+                  <li key={slug} className={`kobo-home__${slug}Entry`}>
+                    <MenuCard slug={slug} />
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </main>
+        </div>
       </div>
-    </main>
+    </PageTransition>
   );
 }

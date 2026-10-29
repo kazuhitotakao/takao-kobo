@@ -1,26 +1,170 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #e0f2fe;
+  --page-background: linear-gradient(#fff, var(--background));
+  --header-background: #f0f9ff;
+  --header-border: #dbeef8;
+  --foreground: #1e293b;
+  /* トップの線画やカードの枠に使う紺色 */
+  --navy: #223a70;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-navy: var(--navy);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ページの下端やスクロールの外側も、グラデーションの終点と同じ水色にする */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* トップ・下層ページで同じ背景とトップバーの配色を使う */
+.site-page-background {
+  background: var(--page-background);
+}
+
+.site-header {
+  border-bottom: 1px solid var(--header-border);
+  background: var(--header-background);
+}
+
+/* microCMS のリッチエディタで書いた HTML（作品詳細の description など）。
+   Tailwind のリセットで見出しやリストの見た目が消えるので、ここで最低限の体裁をつける */
+.rich-text > * + * {
+  @apply mt-5;
+}
+.rich-text :is(h1, h2, h3, h4, h5) {
+  @apply mt-10 font-bold text-foreground;
+}
+.rich-text :is(h1, h2) {
+  @apply text-lg sm:text-xl;
+}
+.rich-text > :first-child {
+  @apply mt-0;
+}
+.rich-text a {
+  @apply text-sky-700 underline underline-offset-4 hover:text-sky-600;
+}
+.rich-text strong {
+  @apply font-bold text-foreground;
+}
+.rich-text ul {
+  @apply list-disc pl-6 marker:text-sky-400;
+}
+.rich-text ol {
+  @apply list-decimal pl-6 marker:text-sky-500;
+}
+.rich-text li + li {
+  @apply mt-1;
+}
+.rich-text blockquote {
+  @apply border-l-4 border-sky-200 pl-4 text-slate-600;
+}
+.rich-text code {
+  @apply rounded bg-sky-100 px-1 py-0.5 text-[0.9em];
+}
+.rich-text pre {
+  @apply overflow-x-auto rounded-lg bg-slate-800 p-4 text-sm leading-relaxed text-slate-100;
+}
+.rich-text pre code {
+  @apply bg-transparent p-0;
+}
+.rich-text img {
+  @apply rounded-xl;
+}
+.rich-text hr {
+  @apply border-sky-200;
+}
+
+/* ページ遷移（src/components/page-transition.tsx の <ViewTransition> から使う） */
+::view-transition {
+  pointer-events: none;
+}
+
+/* 進むときは階段を登るように下から上へ、戻るときは上から下へ */
+::view-transition-old(.nav-forward) {
+  --slide-offset: -40px;
+  animation:
+    150ms ease-in both fade reverse,
+    400ms ease-in both slide-y reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 60px;
+  animation:
+    210ms ease-out 150ms both fade,
+    500ms cubic-bezier(0.34, 1.4, 0.64, 1) both slide-y;
+}
+
+::view-transition-old(.nav-back) {
+  --slide-offset: 40px;
+  animation:
+    150ms ease-in both fade reverse,
+    400ms ease-in both slide-y reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -60px;
+  animation:
+    210ms ease-out 150ms both fade,
+    500ms ease-out both slide-y;
+}
+
+::view-transition-group(.morph) {
+  animation-duration: 400ms;
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+
+/* トップと下層ページのヘッダー（同じ name）は、位置や大きさを動かさずに重ねて切り替え、メニューだけがふわっと出入りするようにする。
+   遷移の画像は、あとから現れたもの（下層ページからトップへ戻るときのトップ全体など）ほど上に重なるので、
+   ヘッダーがその背景に隠れないよう、いちばん上に出す */
+::view-transition-group(site-header) {
+  z-index: 1;
+  animation: none;
+}
+/* group の animation を止めると中の画像の切り替えも一瞬になるので、こちらに長さを付ける */
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation-duration: 250ms;
+  animation-fill-mode: both;
+}
+
+@keyframes fade {
+  from {
+    filter: blur(3px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+@keyframes slide-y {
+  from {
+    translate: 0 var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
 }

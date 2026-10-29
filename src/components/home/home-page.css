@@ -1,0 +1,277 @@
+/* トップ固有のレイアウト。背景とトップバーの配色は globals.css の共通定義に揃える。 */
+.kobo-home__home {
+  flex: 1;
+  overflow-x: clip;
+  /* 上の白から、下に向かってほかのページと同じ水色に変える */
+  background: var(--page-background);
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ヘッダーまで含めて一画面に収める。縦に余った高さはカードを伸ばして埋め、
+   伸ばしきってもまだ余るときだけ、その分を上下に振り分ける */
+.kobo-home__shell { display: flex; min-height: 100dvh; width: min(800px, calc(100% - 64px)); flex-direction: column; margin-inline: auto; }
+/* 下層ページの Header と同じ見た目にする。箱は画面の端から端まで広げ（中身はシェルの幅のまま）、共通の淡い水色で塗る。
+   view-transition-name も同じにして、下層ページとの行き来ではバーとロゴを動かさず、メニューだけを切り替える。
+   箱の大きさが下層ページとずれると、切り替えのあいだロゴが伸び縮みして見えるので注意 */
+.kobo-home__header { display: flex; align-items: center; margin-inline: calc(50% - 50vw); padding: 12px calc(50vw - 50%); view-transition-name: site-header; }
+.kobo-home__main { display: flex; flex: 1; flex-direction: column; justify-content: center; gap: clamp(16px, 4dvh, 56px); padding-block: clamp(12px, 3dvh, 32px); }
+.kobo-home__menu { display: flex; flex: 1; max-height: 480px; }
+.kobo-home__hero { text-align: center; }
+/* 階段の絵は、画面の高さに余裕がある分だけ大きくする（高さ600pxで80px、680px以上で160px）。
+   キャッチコピーも背の低い画面では縮めて、一画面に収める。
+   「step by step」の文字も階段と一緒に縮める。階段を登る人物は登りきると頭が絵の上へ出るので、
+   文字だけ大きいままだと、文字の右端が人物の通り道にかかってしまう。行の高さは変えず、縦の並びはそのままにする。
+   文字は階段から少し離して上に浮かせる（translate で動かすので、まわりの並びは変わらない） */
+.kobo-home__signature { --staircase-width: clamp(72px, 100dvh - 520px, 160px); display: flex; width: fit-content; flex-direction: column; align-items: center; margin: 0 auto 4px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; appearance: none; cursor: default; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.kobo-home__signature:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; border-radius: 4px; }
+.kobo-home__signatureLabel { align-self: flex-start; margin-left: -12px; font-size: min(16px, var(--staircase-width) / 10); font-weight: 500; font-style: italic; line-height: 24px; letter-spacing: .04em; translate: 0 calc(var(--staircase-width) / -20); transform: rotate(-4deg); }
+.kobo-home__staircase { display: block; width: var(--staircase-width); height: auto; margin-top: -4px; }
+/* 字間を最後の文字のあとにも足すので、左にも同じだけあけて中央に揃える */
+.kobo-home__heroTitle { padding-left: .12em; font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', sans-serif; font-size: clamp(28px, min(3.4vw, 6dvh), 40px); font-weight: 600; line-height: 1.5; letter-spacing: .12em; }
+/* 列の間は、左右のカードの後ろから覗くものが飛び出す場所なので、下の --leave-x より広くあける */
+.kobo-home__cardGrid { display: grid; flex: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 16px 104px; margin: 0; padding: 0; list-style: none; }
+.kobo-home__cardGrid > li { min-width: 0; }
+.kobo-home__cardLink { position: relative; isolation: isolate; display: block; height: 100%; color: inherit; text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.kobo-home__cardLink:focus-visible { outline: 3px solid #0ea5e9; outline-offset: 6px; border-radius: 12px; }
+/* 後ろに隠れている覗くもの（いちばん高い About me の人物で約111px）が上からはみ出さないよう、カードはそれより高くする */
+.kobo-home__cardFace { position: relative; z-index: 1; display: grid; height: 100%; min-height: 144px; grid-template: "title illustration" auto "caption illustration" auto ". arrow" 1fr / minmax(0, 1fr) auto; column-gap: 16px; padding: 20px 22px 18px; border: 1.5px solid var(--navy); border-radius: 10px; background: #fff; transition: background-color 200ms; }
+.kobo-home__cardLink:hover .kobo-home__cardFace, .kobo-home__cardLink:focus-visible .kobo-home__cardFace, .kobo-home__cardLink[data-phase='leaving'] .kobo-home__cardFace { background: #f0f9ff; }
+.kobo-home__cardTitle { grid-area: title; font-size: 28px; font-weight: 600; line-height: 1.2; letter-spacing: -.02em; white-space: nowrap; }
+.kobo-home__cardCaption { grid-area: caption; margin-top: 6px; font-size: 14px; letter-spacing: .1em; color: #64748b; }
+.kobo-home__illustration { grid-area: illustration; width: 52px; height: 52px; opacity: .4; transition: opacity 200ms; }
+.kobo-home__cardLink:is(:hover, :focus-visible, [data-phase='leaving']) .kobo-home__illustration { opacity: .8; }
+.kobo-home__illustration > svg, .kobo-home__illustration > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.kobo-home__cardArrow { grid-area: arrow; align-self: end; justify-self: end; font-size: 20px; line-height: 1; transition: translate 200ms; }
+.kobo-home__cardLink:hover .kobo-home__cardArrow, .kobo-home__cardLink:focus-visible .kobo-home__cardArrow { translate: 4px 0; }
+
+/* カードの後ろから覗くもの（menu-card.tsx の peekers。About me の人物・Works の積み木・Blog の猫・Contact の花）。
+   覗くものをカードの後ろに隠しておき、横へずらしてカードの端から覗かせる。PC は左の列を右へ、右の列を左へずらして、列の間に覗かせる。
+   --peek-dir は覗く向き（1 で右、-1 で左）。積み木は傾けると崩れそうに見え、猫はラフ絵どおり立たせたいので、まっすぐのまま出す。
+   人物は、覗いたときに顔の半分ほど、押したときに顔と振る手が出る値。振る手は絵の右へはみ出すので、隣の列のカードに届かない大きさにしている。
+   猫の --peek-x / --leave-x は、cat.tsx の絵のカードの端（x=100・x=50）がカードの右端に重なる値（幅 300 の絵を --peeker-width に縮めた分で計算） */
+.peek-card--about { --peek-x: 46px; --leave-x: 62px; --peeker-width: 72px; }
+.peek-card--works { --peek-x: 70px; --leave-x: 92px; --peeker-width: 96px; --peek-dir: -1; --peek-tilt: 0deg; --leave-tilt: 0deg; }
+.peek-card--blog { --peek-x: 72px; --leave-x: 88px; --peeker-width: 96px; --peek-tilt: 0deg; --leave-tilt: 0deg; }
+.peek-card--contact { --peek-x: 40px; --leave-x: 66px; --peeker-width: 64px; --peek-dir: -1; }
+/* リンクを overflow: hidden で切り抜くと、横へ出たものまで消えてしまう。カードの下端より下だけを切って、カードの向こうにいるように見せる。
+   カードの位置が小数になると線が下端から少しにじむので、下端より少し上で切る */
+.peek-card__stage { position: absolute; inset: 0; clip-path: inset(-100% -100% 2px -100%); pointer-events: none; }
+.peek-card__character { position: absolute; right: 8px; bottom: 0; width: var(--peeker-width); height: auto; transform-origin: 50% 100%; }
+.peek-card--works .peek-card__character, .peek-card--contact .peek-card__character { right: auto; left: 8px; }
+/* 押したときにだけ出すもの（手を振る人物・フレーメン反応の顔・積み上がる積み木と星・咲いた花） */
+.character__wave, .cat__flehmen, .blocks__piece, .blocks__star, .flower__bloom { opacity: 0; }
+/* 手は手首を軸に振る */
+.character__hand { transform-box: fill-box; transform-origin: 40% 100%; }
+.blocks__piece, .blocks__star, .flower__bloom { transform-box: fill-box; transform-origin: center; }
+.blocks__piece--1 { --delay: 60ms; }
+.blocks__piece--2 { --delay: 160ms; }
+.blocks__star { --delay: 260ms; }
+.flower__bloom { --delay: 100ms; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .peek-card__character { transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .flower__bud { transition: opacity 120ms ease-out; }
+  .blocks__piece { transform: translateY(-24px); }
+  .blocks__star, .flower__bloom { transform: scale(.2); }
+  /* スマホのタップでは覗かせず、そのまま飛び出させる */
+  @media (hover: hover) {
+    .peek-card:hover .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--peek-x))) rotate(calc(var(--peek-dir, 1) * var(--peek-tilt, 7deg))); }
+  }
+  .peek-card:focus-visible .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--peek-x))) rotate(calc(var(--peek-dir, 1) * var(--peek-tilt, 7deg))); }
+  /* クリック後は、さらに外へ出て反応する（人物は笑顔で手を振り、猫はフレーメン反応の顔になり、
+     積み木は残りが1つずつ積み上がって星が光り、花は咲く）。ここの合計時間より menu-card.tsx の待ち時間を長くする */
+  .peek-card[data-phase='leaving'] .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--leave-x))) rotate(calc(var(--peek-dir, 1) * var(--leave-tilt, -3deg))); transition-duration: 390ms; transition-timing-function: cubic-bezier(0.34, 1.4, 0.64, 1); }
+  .peek-card[data-phase='leaving'] :is(.character__calm, .cat__calm, .flower__bud) { opacity: 0; }
+  .peek-card[data-phase='leaving'] :is(.character__wave, .cat__flehmen) { opacity: 1; }
+  .peek-card[data-phase='leaving'] :is(.blocks__piece, .blocks__star, .flower__bloom) { opacity: 1; transform: none; transition: opacity 120ms var(--delay), transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay); }
+  .peek-card[data-phase='leaving'] .character__hand { animation: character-wave 530ms ease-in-out 60ms both; }
+}
+
+/* 動きを減らす設定では、最初から覗かせた静止画にする（クリックしても待たずに移動する） */
+@media (prefers-reduced-motion: reduce) {
+  .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--peek-x))) rotate(calc(var(--peek-dir, 1) * var(--peek-tilt, 7deg))); }
+}
+
+@keyframes character-wave {
+  25%, 75% { transform: rotate(-12deg); }
+  50% { transform: rotate(10deg); }
+}
+
+/* 階段を登る人物。登っている間は横向き、登りきったらこちらを向いて正面で待機する。
+   挨拶は全体エリアの pointer enter/leave で切りかえ、喜んだ後は手を下ろした通常姿勢へ戻す */
+.climber__body { transform-origin: 0 25px; }
+.climber__cheer-rays { opacity: 0; }
+.climber__side, .climber__face--side { opacity: 0; }
+.climber[data-phase='climbing'] :is(.climber__side, .climber__face--side) { opacity: 1; }
+.climber[data-phase='climbing'] :is(.climber__front, .climber__face--front) { opacity: 0; }
+/* 右手（絵の左側）で挨拶。喜ぶ動きの開始角度も、この姿勢からつなぐ */
+.climber[data-phase='idle'][data-greeting='true'] .climber__front-arm--left { rotate: -100deg; }
+.climber[data-phase='idle'][data-greeting='true'] .climber__front-arm--left .climber__front-forearm { rotate: -70deg; }
+.climber[data-greeting='true'] .climber__front-arm--left { --cheer-start-angle: -100deg; }
+.climber[data-greeting='true'] .climber__front-arm--left .climber__front-forearm { --cheer-start-angle: -70deg; }
+.climber[data-greeting='true'] .climber__head { --cheer-start-angle: 8deg; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* 登る：足をそろえて立った姿勢から、片足を次の段へ踏み出す・その足に乗って1段登りながら反対の足を次の次の段へ出す・足をそろえる、で2段。
+     これを、いちばん下（4段下）から2回くり返し、あいだの 800ms は2段目に立ち止まって見上げる。
+     1回目が終わる瞬間に体の動きは最初へ戻るので、同じ瞬間に、立つ位置を2段上へ移す（長さ 0 の climber-halfway）。
+     関節の keyframes は scripts/climber-keyframes.mjs で作る（脚の長さから角度を計算し、足が段にめり込まず、接地した足が滑らないようにしている） */
+  .climber[data-phase='climbing'] { translate: -128px 76px; animation: climber-halfway 0s 2400ms forwards; }
+  .climber[data-phase='climbing'] :is(.climber__body, .climber__thigh, .climber__shin, .climber__foot, .climber__arm) { animation-duration: 2s; animation-timing-function: linear; animation-delay: 400ms, 3200ms; animation-fill-mode: none, forwards; }
+  .climber[data-phase='climbing'] .climber__body { animation-name: climber-climb, climber-climb; }
+  .climber[data-phase='climbing'] .climber__thigh--a { animation-name: climber-thigh-a, climber-thigh-a; }
+  .climber[data-phase='climbing'] .climber__thigh--b { animation-name: climber-thigh-b, climber-thigh-b; }
+  .climber[data-phase='climbing'] .climber__shin--a { animation-name: climber-shin-a, climber-shin-a; }
+  .climber[data-phase='climbing'] .climber__shin--b { animation-name: climber-shin-b, climber-shin-b; }
+  .climber[data-phase='climbing'] .climber__foot--a { animation-name: climber-foot-a, climber-foot-a; }
+  .climber[data-phase='climbing'] .climber__foot--b { animation-name: climber-foot-b, climber-foot-b; }
+  .climber[data-phase='climbing'] .climber__arm--a { animation-name: climber-arm-a, climber-arm-a; }
+  .climber[data-phase='climbing'] .climber__arm--b { animation-name: climber-arm-b, climber-arm-b; }
+  .climber[data-phase='climbing'] .climber__head { animation: climber-look-up 800ms ease-in-out 2400ms; }
+
+  /* 体をいったん細くして、横向きから正面へくるっと振り向く */
+  .climber[data-phase='turning'] .climber__body { animation: climber-turn 480ms ease-in-out; }
+  .climber[data-phase='turning'] :is(.climber__side, .climber__face--side) { animation: climber-turn-side 480ms step-end; }
+  .climber[data-phase='turning'] :is(.climber__front, .climber__face--front) { animation: climber-turn-front 480ms step-end; }
+
+  .kobo-home__signature[data-phase='idle'] { cursor: pointer; }
+  .climber[data-phase='idle'] .climber__head { transition: rotate 280ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .climber[data-phase='idle'] :is(.climber__front-arm--left, .climber__front-arm--left .climber__front-forearm) { transition: rotate 320ms cubic-bezier(0.34, 1.4, 0.64, 1); }
+  .climber[data-phase='idle'][data-greeting='true'] .climber__head { rotate: 8deg; }
+
+  /* 喜ぶ：ひざを外へ曲げてためてから、両手を上げて小さく跳ね、もう一度弾んで、手を下ろす。
+     画面によってはヘッダーとのすき間が狭いので、跳ねる高さは少しだけにする。
+     最初はそのときの姿勢（挨拶中なら片手を上げた姿勢）から始め、最後はホバーに関係なく手を下ろす */
+  .climber[data-phase='cheering'] :is(.climber__body, .climber__front-thigh, .climber__front-shin, .climber__front-foot, .climber__front-arm, .climber__front-forearm, .climber__head) { animation-duration: 1300ms; animation-timing-function: ease-in-out; }
+  /* 両手を上げる2回のタイミングに合わせて、頭上の効果線が広がって消える */
+  .climber[data-phase='cheering'] .climber__cheer-rays { animation: climber-cheer-rays 1300ms ease-in-out; }
+  .climber[data-phase='cheering'] .climber__body { animation-name: climber-cheer; }
+  .climber[data-phase='cheering'] .climber__front-thigh { animation-name: climber-cheer-thigh; }
+  .climber[data-phase='cheering'] .climber__front-shin { animation-name: climber-cheer-shin; }
+  .climber[data-phase='cheering'] .climber__front-foot { animation-name: climber-cheer-foot; }
+  .climber[data-phase='cheering'] .climber__front-arm { animation-name: climber-cheer-arm; }
+  .climber[data-phase='cheering'] .climber__front-forearm { animation-name: climber-cheer-forearm; }
+  .climber[data-phase='cheering'] .climber__head { animation-name: climber-cheer-head; }
+}
+
+@keyframes climber-turn {
+  0%, 100% { scale: 1 1; }
+  45% { scale: .12 1; }
+  78% { scale: 1.06 1; }
+}
+@keyframes climber-turn-side {
+  0% { opacity: 1; }
+  45%, 100% { opacity: 0; }
+}
+@keyframes climber-turn-front {
+  0% { opacity: 0; }
+  45%, 100% { opacity: 1; }
+}
+@keyframes climber-halfway {
+  to { translate: -64px 38px; }
+}
+@keyframes climber-look-up {
+  35%, 70% { rotate: -14deg; }
+}
+/* 喜ぶ動き。こちらを向いた体の腕と脚は右側の向きで書き、左側は反転して同じ値で動く。
+   しゃがむ深さに合わせて、ひざを外へ曲げる（太ももを外へ・すねを内へ同じだけ倒す）。足は段と平らに保つ */
+@keyframes climber-cheer {
+  14% { translate: 0 3px; }
+  30%, 58% { translate: 0 -1.5px; }
+  44% { translate: 0 2px; }
+  70% { translate: 0 1px; }
+  80% { translate: 0 0; }
+}
+@keyframes climber-cheer-rays {
+  0%, 16% { opacity: 0; scale: .65; translate: 0 2px; }
+  30% { opacity: 1; scale: 1; translate: 0 0; }
+  44% { opacity: 0; scale: .8; translate: 0 1px; }
+  58% { opacity: 1; scale: 1.08; translate: 0 -1px; }
+  80%, 100% { opacity: 0; scale: 1.15; translate: 0 -2px; }
+}
+@keyframes climber-cheer-thigh {
+  14% { rotate: -28deg; }
+  30%, 58% { rotate: 0deg; }
+  44% { rotate: -23deg; }
+  70% { rotate: -16deg; }
+  80% { rotate: 0deg; }
+}
+@keyframes climber-cheer-shin {
+  14% { rotate: 57deg; }
+  30%, 58% { rotate: 0deg; }
+  44% { rotate: 46deg; }
+  70% { rotate: 33deg; }
+  80% { rotate: 0deg; }
+}
+@keyframes climber-cheer-foot {
+  14% { rotate: -28deg; }
+  30%, 58% { rotate: 0deg; }
+  44% { rotate: -23deg; }
+  70% { rotate: -16deg; }
+  80% { rotate: 0deg; }
+}
+/* 腕は、ためるときに少し内へ寄せてから、左右に開いて上げる（肘から先は伸ばす）。
+   真上まで上げると頭の後ろに隠れるので、手が頭の脇に出るところまでにする */
+@keyframes climber-cheer-arm {
+  0% { rotate: var(--cheer-start-angle, 0deg); }
+  14% { rotate: 12deg; }
+  30%, 80% { rotate: -135deg; }
+  44% { rotate: -125deg; }
+  58% { rotate: -145deg; }
+  100% { rotate: 0deg; }
+}
+@keyframes climber-cheer-forearm {
+  0% { rotate: var(--cheer-start-angle, 0deg); }
+  30%, 80%, 100% { rotate: 0deg; }
+}
+@keyframes climber-cheer-head {
+  0% { rotate: var(--cheer-start-angle, 0deg); }
+  14% { rotate: 6deg; }
+  30%, 58% { rotate: -8deg; }
+  44% { rotate: -2deg; }
+  100% { rotate: 0deg; }
+}
+/* 登る動き。node scripts/climber-keyframes.mjs の出力 */
+@keyframes climber-climb { 0% { translate: 0px 0px; rotate: 0deg; } 6.8% { translate: -0.2px 0px; rotate: 0.5deg; } 12.8% { translate: -1.4px 0px; rotate: 3.7deg; } 16.5% { translate: -1.4px 0px; rotate: 6.7deg; } 21.5% { translate: -0.3px 0.3px; rotate: 10.8deg; } 28.5% { translate: 2.2px 1.4px; rotate: 14.6deg; } 35% { translate: 3.5px 2.1px; rotate: 15deg; } 38.8% { translate: 3.3px 1px; rotate: 15.9deg; } 42.8% { translate: 3.6px -2.4px; rotate: 16.8deg; } 46.3% { translate: 5.1px -6.6px; rotate: 17.4deg; } 49.5% { translate: 7.8px -10.9px; rotate: 17.8deg; } 52.8% { translate: 12px -14.8px; rotate: 18deg; } 55.8% { translate: 16.8px -17.4px; rotate: 18deg; } 58.3% { translate: 21px -18.6px; rotate: 17.8deg; } 61% { translate: 25.5px -18.9px; rotate: 17.5deg; } 63.7% { translate: 29.4px -18.6px; rotate: 17deg; } 66.5% { translate: 32.4px -17.9px; rotate: 16.4deg; } 69.3% { translate: 34.5px -17.2px; rotate: 15.8deg; } 71.8% { translate: 35.4px -16.9px; rotate: 15.2deg; } 74.3% { translate: 35.6px -17.1px; rotate: 14.8deg; } 76.5% { translate: 36px -18.3px; rotate: 14.1deg; } 79.8% { translate: 37.4px -21.6px; rotate: 12deg; } 83.3% { translate: 40.8px -26.5px; rotate: 9deg; } 87.3% { translate: 47.2px -32.2px; rotate: 5.3deg; } 91.3% { translate: 54.9px -36.1px; rotate: 2.1deg; } 93.5% { translate: 58.8px -37.3px; rotate: 0.8deg; } 95.8% { translate: 61.8px -37.8px; rotate: 0.1deg; } 97.8% { translate: 63.4px -38px; rotate: 0deg; } 100% { translate: 64px -38px; rotate: 0deg; } }
+@keyframes climber-thigh-a { 0% { rotate: 0deg; } 22.5% { rotate: -5.2deg; } 35.5% { rotate: -2deg; } 47.8% { rotate: -22.5deg; } 52% { rotate: -37.9deg; } 53.8% { rotate: -55.4deg; } 54.5% { rotate: -78.8deg; } 54.8% { rotate: -93.6deg; } 55.5% { rotate: -150.6deg; } 55.8% { rotate: -162.4deg; } 56.3% { rotate: -174.2deg; } 57% { rotate: -178.8deg; } 58.8% { rotate: -173.2deg; } 64% { rotate: -141.1deg; } 66.5% { rotate: -130.2deg; } 74.5% { rotate: -122deg; } 78.3% { rotate: -111.1deg; } 82% { rotate: -91.8deg; } 93% { rotate: -22.7deg; } 96.8% { rotate: -7.2deg; } 100% { rotate: 0deg; } }
+@keyframes climber-shin-a { 0% { rotate: 0deg; } 19% { rotate: 1deg; } 25.3% { rotate: 15deg; } 37% { rotate: 25deg; } 40% { rotate: 40.9deg; } 44.8% { rotate: 78.8deg; } 51% { rotate: 140.5deg; } 55% { rotate: 173deg; } 56% { rotate: 167.5deg; } 63.5% { rotate: 86.1deg; } 67.3% { rotate: 60.8deg; } 69.5% { rotate: 55.3deg; } 79.5% { rotate: 47.8deg; } 100% { rotate: 0deg; } }
+@keyframes climber-foot-a { 0% { rotate: 0deg; } 16% { rotate: -3.4deg; } 28.7% { rotate: -29.9deg; } 37.8% { rotate: -37.9deg; } 52.8% { rotate: -113.3deg; } 54.3% { rotate: -101.1deg; } 54.8% { rotate: -79.3deg; } 55.8% { rotate: -8.8deg; } 56.5% { rotate: 12.6deg; } 58.3% { rotate: 30.2deg; } 61% { rotate: 40.6deg; } 67.8% { rotate: 52.8deg; } 75.5% { rotate: 52.3deg; } 93.5% { rotate: 3deg; } 100% { rotate: 0deg; } }
+@keyframes climber-thigh-b { 0% { rotate: 0deg; } 2% { rotate: -1.1deg; } 4.8% { rotate: -14.3deg; } 12.5% { rotate: -72.3deg; } 14.8% { rotate: -98.3deg; } 17.5% { rotate: -153.4deg; } 19% { rotate: -161.1deg; } 28% { rotate: -125deg; } 37.5% { rotate: -125deg; } 43.8% { rotate: -113deg; } 49% { rotate: -93.1deg; } 61.5% { rotate: -33.9deg; } 68.3% { rotate: -13deg; } 72.5% { rotate: -8.2deg; } 76.8% { rotate: -11.7deg; } 80.3% { rotate: 6.9deg; } 83.8% { rotate: 8.2deg; } 85.3% { rotate: -3.9deg; } 86% { rotate: -20.7deg; } 87.3% { rotate: -57.8deg; } 87.8% { rotate: -65.7deg; } 88.5% { rotate: -68.6deg; } 90.3% { rotate: -58.8deg; } 93.8% { rotate: -23.8deg; } 96.3% { rotate: -5.6deg; } 97.3% { rotate: -0.5deg; } 100% { rotate: 0deg; } }
+@keyframes climber-shin-b { 0% { rotate: 0deg; } 2% { rotate: 2.1deg; } 3.8% { rotate: 17.8deg; } 13% { rotate: 134.3deg; } 14.8% { rotate: 150.4deg; } 16% { rotate: 156.2deg; } 18% { rotate: 148.7deg; } 24.8% { rotate: 73.5deg; } 27% { rotate: 58.1deg; } 28.7% { rotate: 51.7deg; } 45.5% { rotate: 53.2deg; } 72.5% { rotate: 35.8deg; } 75% { rotate: 46.1deg; } 78% { rotate: 78.4deg; } 80.3% { rotate: 96.6deg; } 83.3% { rotate: 134.9deg; } 85.5% { rotate: 155.5deg; } 86.5% { rotate: 159.2deg; } 88% { rotate: 145deg; } 93.8% { rotate: 45.2deg; } 96% { rotate: 14deg; } 97.3% { rotate: 1deg; } 100% { rotate: 0deg; } }
+@keyframes climber-foot-b { 0% { rotate: 0deg; } 2% { rotate: -1deg; } 13.5% { rotate: -47.5deg; } 15.3% { rotate: -34.8deg; } 18.8% { rotate: 29.4deg; } 22.3% { rotate: 51.8deg; } 27.3% { rotate: 60.7deg; } 39.5% { rotate: 52.2deg; } 62.7% { rotate: -28.5deg; } 74.5% { rotate: -46.3deg; } 76.5% { rotate: -60.2deg; } 82.8% { rotate: -131.2deg; } 84.5% { rotate: -141.5deg; } 85.8% { rotate: -132deg; } 87.8% { rotate: -72.7deg; } 89.5% { rotate: -47deg; } 97% { rotate: -1.3deg; } 100% { rotate: 0deg; } }
+@keyframes climber-arm-a { 0% { rotate: 0deg; } 4.5% { rotate: -6.8deg; } 12.5% { rotate: -37.8deg; } 14.8% { rotate: -51.9deg; } 16.8% { rotate: -75deg; } 36.8% { rotate: -67.2deg; } 46.3% { rotate: -47.4deg; } 53.5% { rotate: -11.2deg; } 54.5% { rotate: 6.7deg; } 55.5% { rotate: 48.9deg; } 56% { rotate: 60deg; } 80.3% { rotate: 59.8deg; } 84.8% { rotate: 42.3deg; } 87.3% { rotate: -0.1deg; } 88.5% { rotate: -10.6deg; } 97% { rotate: 2.8deg; } 100% { rotate: 0deg; } }
+@keyframes climber-arm-b { 0% { rotate: 0deg; } 6.8% { rotate: 14.5deg; } 13.3% { rotate: 41.4deg; } 15.5% { rotate: 59.8deg; } 40.8% { rotate: 60deg; } 46.5% { rotate: 46.5deg; } 52.8% { rotate: 17.8deg; } 54.3% { rotate: -0.3deg; } 55.5% { rotate: -48.9deg; } 56% { rotate: -60.8deg; } 58.3% { rotate: -70.1deg; } 81% { rotate: -58.3deg; } 84.8% { rotate: -42.3deg; } 87.5% { rotate: 3.6deg; } 88.8% { rotate: 11.2deg; } 97% { rotate: -2.8deg; } 100% { rotate: 0deg; } }
+
+/* スマホは1列。すべてのカードを同じ高さの横並びレイアウトに揃え、右に覗くものが飛び出す分をあける */
+@media (max-width: 620px) {
+  .kobo-home__shell { width: calc(100% - 40px); }
+  .kobo-home__header { padding-block: 10px; }
+  .kobo-home__signature { --staircase-width: clamp(52px, 100dvh - 494px, 120px); }
+  .kobo-home__signatureLabel { margin-left: -8px; font-size: min(13px, var(--staircase-width) * 13 / 120); line-height: 19.5px; }
+  .kobo-home__staircase { margin-top: -2px; }
+  .kobo-home__main { gap: clamp(12px, 2.5dvh, 40px); padding-block: clamp(12px, 2.5dvh, 40px); }
+  .kobo-home__heroTitle { padding-left: .04em; font-size: clamp(20px, 6.4vw, 28px); letter-spacing: .04em; }
+  .kobo-home__menu { max-height: 400px; }
+  /* すべての行を同じ比率で伸ばし、カードの高さを均等にする */
+  .kobo-home__cardGrid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-rows: 1fr; gap: 8px; }
+  /* どのカードもタイトル・説明・矢印を横に並べ、カード内の絵は非表示にする */
+  /* 左右の余白を均等にして中央へ。右側にはイラストが飛び出す分の余白も確保する */
+  .kobo-home__cardLink { width: calc(100% - 64px); margin-inline: auto; }
+  .kobo-home__cardFace { min-height: 52px; grid-template: "title caption arrow" / auto minmax(0, 1fr) auto; align-items: center; column-gap: 12px; padding: 8px 16px; }
+  .kobo-home__cardTitle { font-size: 20px; }
+  .kobo-home__cardCaption { margin-top: 0; font-size: 13px; }
+  .kobo-home__illustration { display: none; }
+  .kobo-home__cardArrow { align-self: center; font-size: 18px; }
+  /* 覗くものは全部右へ出す。低いカードの後ろに隠れる大きさにし、人物の振る手も画面内に収める */
+  .peek-card--about { --peek-x: 20px; --leave-x: 28px; --peeker-width: 30px; }
+  .peek-card--works { --peek-x: 44px; --leave-x: 56px; --peeker-width: 52px; --peek-dir: 1; }
+  .peek-card--blog { --peek-x: 40px; --leave-x: 48px; --peeker-width: 48px; }
+  .peek-card--contact { --peek-x: 26px; --leave-x: 44px; --peeker-width: 36px; --peek-dir: 1; }
+  .peek-card--works .peek-card__character, .peek-card--contact .peek-card__character { right: 8px; left: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kobo-home__cardFace, .kobo-home__cardArrow, .kobo-home__illustration { transition: none; }
+  .kobo-home__cardLink:hover .kobo-home__cardArrow, .kobo-home__cardLink:focus-visible .kobo-home__cardArrow { translate: none; }
+}
