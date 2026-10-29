@@ -2,7 +2,8 @@
 .kobo-home__home {
   flex: 1;
   overflow-x: clip;
-  background: #fff;
+  /* 上の白から、下に向かってほかのページと同じ水色に変える */
+  background: linear-gradient(#fff, var(--background));
   color: var(--navy);
   -webkit-font-smoothing: antialiased;
 }
@@ -32,7 +33,7 @@
 .kobo-home__cardGrid > li { min-width: 0; }
 .kobo-home__cardLink { position: relative; isolation: isolate; display: block; height: 100%; color: inherit; text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .kobo-home__cardLink:focus-visible { outline: 3px solid #0ea5e9; outline-offset: 6px; border-radius: 12px; }
-/* 後ろに隠れている覗くもの（いちばん高い About me の人物で約135px）が上からはみ出さないよう、カードはそれより高くする */
+/* 後ろに隠れている覗くもの（いちばん高い About me の人物で約111px）が上からはみ出さないよう、カードはそれより高くする */
 .kobo-home__cardFace { position: relative; z-index: 1; display: grid; height: 100%; min-height: 144px; grid-template: "title illustration" auto "caption illustration" auto ". arrow" 1fr / minmax(0, 1fr) auto; column-gap: 16px; padding: 20px 22px 18px; border: 1.5px solid var(--navy); border-radius: 10px; background: #fff; transition: background-color 200ms; }
 .kobo-home__cardLink:hover .kobo-home__cardFace, .kobo-home__cardLink:focus-visible .kobo-home__cardFace, .kobo-home__cardLink[data-phase='leaving'] .kobo-home__cardFace { background: #f0f9ff; }
 .kobo-home__cardTitle { grid-area: title; font-size: 28px; font-weight: 600; line-height: 1.2; letter-spacing: -.02em; white-space: nowrap; }
@@ -46,8 +47,9 @@
 /* カードの後ろから覗くもの（menu-card.tsx の peekers。About me の人物・Works の積み木・Blog の猫・Contact の花）。
    覗くものをカードの後ろに隠しておき、横へずらしてカードの端から覗かせる。PC は左の列を右へ、右の列を左へずらして、列の間に覗かせる。
    --peek-dir は覗く向き（1 で右、-1 で左）。積み木は傾けると崩れそうに見え、猫はラフ絵どおり立たせたいので、まっすぐのまま出す。
+   人物は、覗いたときに顔の半分ほど、押したときに顔と振る手が出る値。振る手は絵の右へはみ出すので、隣の列のカードに届かない大きさにしている。
    猫の --peek-x / --leave-x は、cat.tsx の絵のカードの端（x=100・x=50）がカードの右端に重なる値（幅 300 の絵を --peeker-width に縮めた分で計算） */
-.peek-card--about { --peek-x: 54px; --leave-x: 96px; --peeker-width: 96px; }
+.peek-card--about { --peek-x: 46px; --leave-x: 62px; --peeker-width: 72px; }
 .peek-card--works { --peek-x: 70px; --leave-x: 92px; --peeker-width: 96px; --peek-dir: -1; --peek-tilt: 0deg; --leave-tilt: 0deg; }
 .peek-card--blog { --peek-x: 72px; --leave-x: 88px; --peeker-width: 96px; --peek-tilt: 0deg; --leave-tilt: 0deg; }
 .peek-card--contact { --peek-x: 40px; --leave-x: 66px; --peeker-width: 64px; --peek-dir: -1; }
@@ -56,10 +58,10 @@
 .peek-card__stage { position: absolute; inset: 0; clip-path: inset(-100% -100% 2px -100%); pointer-events: none; }
 .peek-card__character { position: absolute; right: 8px; bottom: 0; width: var(--peeker-width); height: auto; transform-origin: 50% 100%; }
 .peek-card--works .peek-card__character, .peek-card--contact .peek-card__character { right: auto; left: 8px; }
-/* 押したときにだけ出すもの（笑顔・ほっぺ・フレーメン反応の顔・積み上がる積み木と星・咲いた花） */
-.character__mouth-smile, .character__cheek, .cat__flehmen, .blocks__piece, .blocks__star, .flower__bloom { opacity: 0; }
-/* 腕は肩（viewBox の座標）を軸に振る */
-.character__arm { transform-origin: 100px 126px; }
+/* 押したときにだけ出すもの（手を振る人物・フレーメン反応の顔・積み上がる積み木と星・咲いた花） */
+.character__wave, .cat__flehmen, .blocks__piece, .blocks__star, .flower__bloom { opacity: 0; }
+/* 手は手首を軸に振る */
+.character__hand { transform-box: fill-box; transform-origin: 40% 100%; }
 .blocks__piece, .blocks__star, .flower__bloom { transform-box: fill-box; transform-origin: center; }
 .blocks__piece--1 { --delay: 60ms; }
 .blocks__piece--2 { --delay: 160ms; }
@@ -68,7 +70,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .peek-card__character { transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .character__mouth-calm, .character__mouth-smile, .character__cheek, .flower__bud { transition: opacity 120ms ease-out; }
+  .flower__bud { transition: opacity 120ms ease-out; }
   .blocks__piece { transform: translateY(-24px); }
   .blocks__star, .flower__bloom { transform: scale(.2); }
   /* スマホのタップでは覗かせず、そのまま飛び出させる */
@@ -79,10 +81,10 @@
   /* クリック後は、さらに外へ出て反応する（人物は笑顔で手を振り、猫はフレーメン反応の顔になり、
      積み木は残りが1つずつ積み上がって星が光り、花は咲く）。ここの合計時間より menu-card.tsx の待ち時間を長くする */
   .peek-card[data-phase='leaving'] .peek-card__character { transform: translateX(calc(var(--peek-dir, 1) * var(--leave-x))) rotate(calc(var(--peek-dir, 1) * var(--leave-tilt, -3deg))); transition-duration: 390ms; transition-timing-function: cubic-bezier(0.34, 1.4, 0.64, 1); }
-  .peek-card[data-phase='leaving'] :is(.character__mouth-calm, .cat__calm, .flower__bud) { opacity: 0; }
-  .peek-card[data-phase='leaving'] :is(.character__mouth-smile, .character__cheek, .cat__flehmen) { opacity: 1; }
+  .peek-card[data-phase='leaving'] :is(.character__calm, .cat__calm, .flower__bud) { opacity: 0; }
+  .peek-card[data-phase='leaving'] :is(.character__wave, .cat__flehmen) { opacity: 1; }
   .peek-card[data-phase='leaving'] :is(.blocks__piece, .blocks__star, .flower__bloom) { opacity: 1; transform: none; transition: opacity 120ms var(--delay), transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay); }
-  .peek-card[data-phase='leaving'] .character__arm { animation: character-wave 530ms ease-in-out 60ms both; }
+  .peek-card[data-phase='leaving'] .character__hand { animation: character-wave 530ms ease-in-out 60ms both; }
 }
 
 /* 動きを減らす設定では、最初から覗かせた静止画にする（クリックしても待たずに移動する） */
@@ -123,8 +125,8 @@
   .kobo-home__aboutEntry .kobo-home__cardTitle { font-size: 26px; }
   .kobo-home__aboutEntry .kobo-home__cardCaption { margin-top: 6px; }
   .kobo-home__aboutEntry .kobo-home__cardArrow { align-self: end; }
-  /* 覗くものは全部右へ出す。1行のカードは低いので、積み木・猫・花は小さくして後ろに隠す */
-  .peek-card--about { --leave-x: 84px; }
+  /* 覗くものは全部右へ出す。1行のカードは低いので、積み木・猫・花は小さくして後ろに隠す。人物も振る手が画面の外へ出ないよう小さくする */
+  .peek-card--about { --peek-x: 38px; --leave-x: 52px; --peeker-width: 60px; }
   .peek-card--works { --peek-x: 44px; --leave-x: 56px; --peeker-width: 52px; --peek-dir: 1; }
   .peek-card--blog { --peek-x: 40px; --leave-x: 48px; --peeker-width: 48px; }
   .peek-card--contact { --peek-x: 26px; --leave-x: 44px; --peeker-width: 36px; --peek-dir: 1; }

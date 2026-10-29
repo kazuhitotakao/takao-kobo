@@ -3,6 +3,7 @@
 // 座標は元の絵のピクセルのまま書き、translate でこの SVG の中へ移している。
 // ふだんの絵はカードの端が x=100、フレーメン反応の絵は x=50 に来る。home-page.css の --peek-x / --leave-x は、
 // 覗いた・押したときにこの位置がちょうどカードの右端に重なるように決めている。
+// 体はほんの少しだけ温かみのある白に塗り、フレーメン反応で見える口の中は真っ白にしている。
 // cat__ で始まる class は home-page.css の動き（ポーズの切り替え）と対応している
 export function Cat({ className }: { className?: string }) {
   return (
@@ -11,7 +12,7 @@ export function Cat({ className }: { className?: string }) {
       aria-hidden
       overflow="visible"
       className={`text-navy ${className ?? ''}`}
-      fill="#fff"
+      fill="#fffcf7"
       stroke="currentColor"
       strokeWidth="7"
       strokeLinecap="round"
@@ -29,7 +30,7 @@ export function Cat({ className }: { className?: string }) {
       <g className="cat__flehmen" transform="translate(-1492.5 -278.5)">
         <path d="M1543 381 L1620 293 Q1625 285 1631 293 L1646 330 Q1670 325 1695 329 L1715 305 Q1720 297 1726 305 L1736 348 C1752 365 1764 390 1765 410 Q1766 425 1760 432 C1775 440 1782 455 1780 472 C1778 492 1755 503 1725 507 C1700 510 1683 518 1675 532 Q1668 545 1669 562 L1669 579 Q1669 588 1660 588 L1650 588 Q1640 588 1640 579 L1640 562 Q1640 549 1625 549 Q1610 549 1610 562 L1610 579 Q1610 588 1601 588 L1590 588 Q1580 588 1580 579 L1580 556 Q1580 546 1570 546 L1543 546 L1520 546 L1520 381 Z" />
         <path d="M1614 357 H1631 M1614 366 H1631 M1614 375 H1631 M1681 366 H1698 M1681 374.5 H1698 M1681 383 H1698" fill="none" strokeWidth="5.5" />
-        <path d="M1588 405 Q1587 393 1600 392 L1636 389 Q1644 383 1650 390 Q1654 396 1662 395 L1686 396 Q1697 397 1696 408 L1695 423 Q1694 434 1683 434 L1598 432 Q1587 431 1588 420 Z" />
+        <path fill="#fff" d="M1588 405 Q1587 393 1600 392 L1636 389 Q1644 383 1650 390 Q1654 396 1662 395 L1686 396 Q1697 397 1696 408 L1695 423 Q1694 434 1683 434 L1598 432 Q1587 431 1588 420 Z" />
         <path d="M1581 383 Q1572 392 1578 403 M1716 397 Q1725 406 1719 417" fill="none" />
       </g>
     </svg>
