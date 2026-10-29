@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: { default: siteName, template: `%s | ${siteName}` },
   description: siteDescription,
+  // Google Search Console の所有権確認（HTMLタグ方式）。消すと確認が外れるので残しておく
+  verification: { google: 'OMn9XRkaR7FK1S3WZGQvKR4Uhhh5l8Z7alL6gMPiHR8' },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
