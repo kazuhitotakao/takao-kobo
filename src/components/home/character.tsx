@@ -6,7 +6,8 @@ import { illustrationSources } from '@/lib/illustrations';
 // 手を振る絵は顔の位置をふだんの絵にそろえていて、上げた手は viewBox の右へはみ出す（overflow="visible" で見せる）。
 // 下端はふだんの絵の腕より少し上にして、覗いたときに体の前の腕がカードの下から見えないようにしている。
 // 色は線の下に塗る。塗りの形は、線と線のすき間を閉じたところで囲まれた部分を塗りつぶし、線の下へ少し広げて作った。
-// home-page.css の --peek-x / --leave-x は、覗いたときに顔の半分ほど、押したときに顔と振る手がカードの右端から出る値にしている。
+// home-page.css の --peek-x / --leave-x は、覗いたときに顔の半分ほど、押したときに顔と振る手がカードの右端から出る値にしている
+// （スマホは home-page.css で絵を左右反転し、カードの左端から出す）。
 // character__ で始まる class は home-page.css の動き（ポーズの切り替え・手を振る）と対応している
 export function Character({ className }: { className?: string }) {
   const src = illustrationSources.about;
