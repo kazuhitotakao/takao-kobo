@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-// 詳細ページから一覧へ、404 やエラーのページからトップへ戻るリンク
+// 詳細ページから一覧へ、404 やエラーのページからトップへ戻るリンク。
+// スマホ（トップが1列になる 680px 以下）では指で押しやすいよう、押せる範囲を高さ 48px にし、淡い背景と枠で押せる場所を見せる
 export function BackLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
       transitionTypes={['nav-back']}
-      className="group inline-flex items-center gap-1.5 rounded-sm font-semibold text-sky-700 transition-colors hover:text-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+      className="group inline-flex items-center gap-1.5 rounded-sm font-semibold text-sky-700 transition-colors hover:text-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 max-[681px]:min-h-12 max-[681px]:rounded-full max-[681px]:bg-white/70 max-[681px]:px-4 max-[681px]:ring-1 max-[681px]:ring-sky-200"
     >
       <span
         aria-hidden
