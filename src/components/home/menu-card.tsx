@@ -15,6 +15,9 @@ import { menuCaptions, menuNames, type MenuSlug } from '@/lib/menu';
 // 積み木と星 260ms 後から 280ms）を見せ終わってから移動するよう、それより少し長くする
 const exitDurationMs = 640;
 
+// menu-title は、カードと各ページの見出しの間をタイトルが移動する遷移の印（globals.css でスマホの動きを調整する）
+const transitionTypes = ['nav-forward', 'menu-title'];
+
 // カードの後ろに隠れていて、カードの端から覗くもの
 const peekers: Record<MenuSlug, ReactNode> = {
   about: <Character className="peek-card__character" />,
@@ -47,7 +50,7 @@ export function MenuCard({ slug }: { slug: MenuSlug }) {
   return (
     <Link
       href={`/${slug}`}
-      transitionTypes={['nav-forward']}
+      transitionTypes={transitionTypes}
       data-phase={isLeaving ? 'leaving' : undefined}
       onNavigate={(event) => {
         // 最初のクリックで移動を決めているので、待ち時間中にもう一度押されても何もしない
@@ -62,7 +65,7 @@ export function MenuCard({ slug }: { slug: MenuSlug }) {
         event.preventDefault();
         setIsLeaving(true);
         exitTimerRef.current = window.setTimeout(() => {
-          router.push(`/${slug}`, { transitionTypes: ['nav-forward'] });
+          router.push(`/${slug}`, { transitionTypes });
         }, exitDurationMs);
       }}
       className={`peek-card peek-card--${slug} kobo-home__cardLink`}

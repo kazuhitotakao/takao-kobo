@@ -121,6 +121,25 @@ body {
 ::view-transition-image-pair(.morph) {
   animation-name: via-blur;
 }
+/* スマホ（トップが1列になる 680px 以下）では、カードと見出しの間をタイトルが縦に長く移動する。
+   本文が見えたままだと、移動中のタイトルが本文の上を横切ってちらつくので、タイトルが移動する遷移（menu-title）では、
+   タイトルを速めに着かせ、本文はタイトルがほぼ着いてから出す。動きを減らす設定では遷移が一瞬で終わるので付けない */
+@media (max-width: 680px) and (prefers-reduced-motion: no-preference) {
+  ::view-transition-group(.morph) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  /* トップから各ページへ：各ページの PageTransition は SubPage の div の中にあって enter が付かず、
+     遷移のあいだも実際の画面がそのまま見えている。そこで見出しに続く本文そのものを遅れて出す。
+     遷移が終わる（トップの本文が動き終わる 400ms）とこの指定は外れるので、それまでに出し終える */
+  :root:active-view-transition-type(menu-title):active-view-transition-type(nav-forward) .sub-page__title ~ * {
+    animation: 200ms ease-out 180ms both fade;
+  }
+  /* 各ページからトップへ：トップの本文を、タイトルがほぼ着いてから出す */
+  :root:active-view-transition-type(menu-title)::view-transition-new(.nav-back) {
+    animation-delay: 250ms, 0s;
+  }
+}
 
 /* トップと下層ページのヘッダー（同じ name）は、位置や大きさを動かさずに重ねて切り替え、メニューだけがふわっと出入りするようにする。
    遷移の画像は、あとから現れたもの（下層ページからトップへ戻るときのトップ全体など）ほど上に重なるので、
