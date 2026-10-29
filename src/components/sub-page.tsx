@@ -25,7 +25,7 @@ export function SubPage({
   return (
     <div className="flex min-h-dvh flex-col pointer-fine:h-dvh">
       <Header currentSlug={slug} isDetail={isDetail} />
-      <SubPageScrollArea className="flex-1 bg-sky-50 pointer-fine:min-h-0 pointer-fine:overflow-y-auto pointer-fine:scrollbar-gutter-stable">
+      <SubPageScrollArea className="site-page-background flex-1 pointer-fine:min-h-0 pointer-fine:overflow-y-auto pointer-fine:scrollbar-gutter-stable">
         <PageTransition>
           {/* 本文は右にスクロールバーの幅が空くので、左にも同じだけ（画面が狭くて余白が足りなければその分だけ）あけて、
               Container（max-w-[54rem]）の位置を Header とそろえる。100vw - 100% がスクロールバーの幅になる */}

@@ -4,7 +4,7 @@ import { Logo } from '@/components/layout/logo';
 // トップそのものにいるので、ロゴはトップへのリンクにしない
 export function HomeHeader() {
   return (
-    <header className="kobo-home__header">
+    <header className="site-header kobo-home__header">
       <Logo />
     </header>
   );

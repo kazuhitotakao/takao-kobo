@@ -1,9 +1,9 @@
-/* トップ専用。既存の色変数を使い、globals.css や詳細ページのスタイルには触れない。 */
+/* トップ固有のレイアウト。背景とトップバーの配色は globals.css の共通定義に揃える。 */
 .kobo-home__home {
   flex: 1;
   overflow-x: clip;
   /* 上の白から、下に向かってほかのページと同じ水色に変える */
-  background: linear-gradient(#fff, var(--background));
+  background: var(--page-background);
   color: var(--navy);
   -webkit-font-smoothing: antialiased;
 }
@@ -11,10 +11,10 @@
 /* ヘッダーまで含めて一画面に収める。縦に余った高さはカードを伸ばして埋め、
    伸ばしきってもまだ余るときだけ、その分を上下に振り分ける */
 .kobo-home__shell { display: flex; min-height: 100dvh; width: min(800px, calc(100% - 64px)); flex-direction: column; margin-inline: auto; }
-/* 下層ページの Header と同じ見た目にする。箱は画面の端から端まで広げ（中身はシェルの幅のまま）、白で塗る。
+/* 下層ページの Header と同じ見た目にする。箱は画面の端から端まで広げ（中身はシェルの幅のまま）、共通の淡い水色で塗る。
    view-transition-name も同じにして、下層ページとの行き来ではバーとロゴを動かさず、メニューだけを切り替える。
    箱の大きさが下層ページとずれると、切り替えのあいだロゴが伸び縮みして見えるので注意 */
-.kobo-home__header { display: flex; align-items: center; margin-inline: calc(50% - 50vw); padding: 12px calc(50vw - 50%); border-bottom: 1px solid #e2e8f0; background: #fff; view-transition-name: site-header; }
+.kobo-home__header { display: flex; align-items: center; margin-inline: calc(50% - 50vw); padding: 12px calc(50vw - 50%); view-transition-name: site-header; }
 .kobo-home__main { display: flex; flex: 1; flex-direction: column; justify-content: center; gap: clamp(16px, 4dvh, 56px); padding-block: clamp(12px, 3dvh, 32px); }
 .kobo-home__menu { display: flex; flex: 1; max-height: 480px; }
 .kobo-home__hero { text-align: center; }

@@ -2,6 +2,9 @@
 
 :root {
   --background: #e0f2fe;
+  --page-background: linear-gradient(#fff, var(--background));
+  --header-background: #f0f9ff;
+  --header-border: #dbeef8;
   --foreground: #1e293b;
   /* トップの線画やカードの枠に使う紺色 */
   --navy: #223a70;
@@ -15,11 +18,21 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* 全体は水色で塗る（下層ページの本文は SubPage 側で白っぽい水色にする） */
+/* ページの下端やスクロールの外側も、グラデーションの終点と同じ水色にする */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* トップ・下層ページで同じ背景とトップバーの配色を使う */
+.site-page-background {
+  background: var(--page-background);
+}
+
+.site-header {
+  border-bottom: 1px solid var(--header-border);
+  background: var(--header-background);
 }
 
 /* microCMS のリッチエディタで書いた HTML（作品詳細の description など）。
