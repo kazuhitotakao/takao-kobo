@@ -3,18 +3,34 @@ import { cacheLife } from 'next/cache';
 import { microcmsClient } from '@/lib/microcms';
 import type { BlogArticle } from '@/types/blog';
 
-export async function getBlogArticles(): Promise<BlogArticle[]> {
+export const BLOG_PAGE_SIZE = 10;
+
+export async function getBlogCategories(): Promise<string[]> {
   'use cache';
   cacheLife('minutes');
 
-  const response = await microcmsClient.getList<BlogArticle>({
+  // 本文を取得せず、公開記事で使われているカテゴリだけを集める。
+  const articles = await microcmsClient.getAllContents<Pick<BlogArticle, 'category'>>({
+    endpoint: 'blogs',
+    queries: { fields: ['id', 'category'] },
+  });
+  return [...new Set(articles.flatMap((article) => article.category ?? []))];
+}
+
+export async function getBlogArticles(page = 1, category = '') {
+  'use cache';
+  cacheLife('minutes');
+
+  return microcmsClient.getList<Omit<BlogArticle, 'body'>>({
     endpoint: 'blogs',
     queries: {
-      limit: 10,
+      limit: BLOG_PAGE_SIZE,
+      offset: (page - 1) * BLOG_PAGE_SIZE,
+      orders: '-publishedAt,-createdAt,id',
+      fields: ['id', 'title', 'summary', 'category', 'publishedAt', 'createdAt'],
+      ...(category ? { filters: `category[contains]${category}` } : {}),
     },
   });
-
-  return response.contents;
 }
 
 // 記事詳細をビルドで静的に生成するため、一覧の件数上限によらず全記事の ID を取る

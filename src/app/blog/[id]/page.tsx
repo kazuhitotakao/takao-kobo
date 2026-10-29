@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { BackLink } from '@/components/back-link';
+import { BlogCategories } from '@/components/blog-categories';
+import { BlogBackLink } from '@/components/blog-back-link';
 import { ShowEndWhenTall } from '@/components/show-end-when-tall';
 import { SubPage } from '@/components/sub-page';
 import { formatDate, getBlogArticle, getBlogArticleIds } from '@/lib/blog';
@@ -35,22 +37,25 @@ async function BlogArticleDetail({ params }: { params: PageProps<'/blog/[id]'>['
       <ShowEndWhenTall
         end={
           <div className="mt-16 border-t border-sky-200 pt-8 sm:mt-20">
-            <BackLink href="/blog">Blog一覧へ戻る</BackLink>
+            <Suspense fallback={<BackLink href="/blog">Blog一覧へ戻る</BackLink>}><BlogBackLink /></Suspense>
           </div>
         }
       >
-        <time dateTime={publishedAt} className="text-sm font-medium text-slate-500">
-          {formatDate(publishedAt)}
-        </time>
-        <h1 className="mt-2 text-3xl leading-snug font-bold sm:text-4xl">{article.title}</h1>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 sm:gap-x-8">
+          <time dateTime={publishedAt} className="shrink-0 text-sm font-medium text-slate-500">
+            {formatDate(publishedAt)}
+          </time>
+          <BlogCategories categories={article.category} />
+        </div>
+        <h1 className="mt-4 text-3xl leading-snug font-bold sm:text-4xl">{article.title}</h1>
 
         {article.thumbnail && (
-          <div className="relative mt-10 aspect-video overflow-hidden rounded-2xl border border-sky-100 bg-sky-100 shadow-sm">
+          <div className="relative mx-auto mt-8 aspect-video w-full max-w-md overflow-hidden rounded-2xl border border-sky-100 bg-sky-100 shadow-sm">
             <Image
               src={article.thumbnail.url}
               alt={article.thumbnail.alt ?? ''}
               fill
-              sizes="(min-width: 864px) 800px, 100vw"
+              sizes="(min-width: 488px) 448px, calc(100vw - 40px)"
               loading="eager"
               fetchPriority="high"
               className="object-cover"
@@ -86,7 +91,7 @@ function BlogArticleFallback() {
 export default function BlogArticlePage({ params }: PageProps<'/blog/[id]'>) {
   return (
     <SubPage slug="blog" isDetail>
-      <BackLink href="/blog">Blog一覧へ戻る</BackLink>
+      <Suspense fallback={<BackLink href="/blog">Blog一覧へ戻る</BackLink>}><BlogBackLink /></Suspense>
       <Suspense fallback={<BlogArticleFallback />}>
         <BlogArticleDetail params={params} />
       </Suspense>

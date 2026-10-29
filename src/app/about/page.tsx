@@ -34,7 +34,8 @@ export default function AboutPage() {
             </div>
             <div className="w-full min-w-0 space-y-5">
               <p>約12年間、市役所で働いた後、Webエンジニアに転身しました。</p>
-              <p>これまでNuxt・VueやLaravelを使ったWebシステムの開発・改修に携わってきました。</p>
+              <p>2024年2月からWeb開発の学習を始め、2025年4月からエンジニアとして実務に携わっています。</p>
+              <p>これまでVue.js・Nuxt.js・Laravelを使ったWebシステムの開発・改修に携わってきました。</p>
               <p>新しいものを作ることはもちろん、既存の仕組みを改善していくことも好きです。</p>
               <p>仕事以外では、釣りや家庭菜園などを楽しんでいます。</p>
             </div>
