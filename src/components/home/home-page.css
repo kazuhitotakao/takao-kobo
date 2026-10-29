@@ -247,7 +247,10 @@
 @media (max-width: 680px) {
   .kobo-home__shell { width: calc(100% - 40px); }
   .kobo-home__header { padding-block: 10px; }
-  .kobo-home__signature { --staircase-width: clamp(52px, 100dvh - 494px, 120px); }
+  /* 階段の絵は、先にメニューのカードを縮めて（1枚およそ60pxまで）大きさを保ち、それでも高さが足りない画面でだけ縮める
+     （高さ502px以上で120px）。メニューは残りの高さを埋めるので、背の高い画面ではカードがそのぶん伸びる。
+     上の余白は、喜んだときの頭上の効果線がヘッダーにかからない分あけておく */
+  .kobo-home__signature { --staircase-width: clamp(52px, 100dvh - 382px, 120px); margin-top: 10px; }
   .kobo-home__signatureLabel { margin-left: -8px; font-size: min(13px, var(--staircase-width) * 13 / 120); line-height: 19.5px; }
   .kobo-home__staircase { margin-top: -2px; }
   .kobo-home__main { gap: clamp(12px, 2.5dvh, 40px); padding-block: clamp(12px, 2.5dvh, 40px); }
