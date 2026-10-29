@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { createPageMetadata, siteDescription, siteName, siteUrl } from "@/lib/metadata";
@@ -13,6 +13,10 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+export const viewport: Viewport = {
+  themeColor: '#f0f9ff',
+};
 
 export const metadata: Metadata = {
   ...createPageMetadata({ path: '/' }),

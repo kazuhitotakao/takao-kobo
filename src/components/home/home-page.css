@@ -247,7 +247,7 @@
 /* スマホは1列。すべてのカードを同じ高さの横並びレイアウトに揃え、左に覗くものが飛び出す分をあける */
 @media (max-width: 680px) {
   .kobo-home__shell { width: calc(100% - 40px); }
-  .kobo-home__header { padding-block: 10px; }
+  .kobo-home__header { position: sticky; top: 0; z-index: 20; padding-block: 10px; }
   /* 階段の絵は、先にメニューのカードを縮めて（1枚およそ60pxまで）大きさを保ち、それでも高さが足りない画面でだけ縮める
      （高さ502px以上で120px）。メニューは残りの高さを埋めるので、背の高い画面ではカードがそのぶん伸びる。
      上の余白は、喜んだときの頭上の効果線がヘッダーにかからない分あけておく */
