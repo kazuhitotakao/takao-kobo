@@ -4,8 +4,8 @@ import { ExternalLink } from '@/components/external-link';
 import { parseTechnologies } from '@/lib/works';
 import type { Work } from '@/types/work';
 
-// 学習課題のカードに並べる技術名の上限。残りは詳細ページで見せる
-const compactTechnologyLimit = 5;
+// カードに並べる技術名の上限。残りは詳細ページで見せる
+const cardTechnologyLimit = 5;
 
 const focusRingClassName = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500';
 
@@ -23,9 +23,7 @@ export function WorkCard({ work, variant, detailHref, aboveTheFold = false }: Wo
   const isFeatured = variant === 'featured';
   // 補足の行（過去の構築環境など）は詳細ページだけで出す
   const technologyNames = parseTechnologies(work.technologies).names;
-  const visibleTechnologyNames = isFeatured
-    ? technologyNames
-    : technologyNames.slice(0, compactTechnologyLimit);
+  const visibleTechnologyNames = technologyNames.slice(0, cardTechnologyLimit);
   const hiddenTechnologyCount = technologyNames.length - visibleTechnologyNames.length;
   const technologiesLabelId = `work-${work.id}-technologies`;
 
@@ -117,7 +115,9 @@ export function WorkCard({ work, variant, detailHref, aboveTheFold = false }: Wo
                   </li>
                 ))}
                 {hiddenTechnologyCount > 0 && (
-                  <li className="px-1 py-0.5 text-xs text-slate-500">ほか{hiddenTechnologyCount}件</li>
+                  <li className={`px-1 text-slate-500 ${isFeatured ? 'py-1 text-sm' : 'py-0.5 text-xs'}`}>
+                    ほか{hiddenTechnologyCount}件
+                  </li>
                 )}
               </ul>
             </div>
