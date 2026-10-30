@@ -3,7 +3,7 @@ import { Container } from '@/components/layout/container';
 import { Header } from '@/components/layout/header';
 import { MenuTitle, PageTransition } from '@/components/page-transition';
 import { SubPageScrollArea } from '@/components/sub-page-scroll-area';
-import { menuNames, type MenuSlug } from '@/lib/menu';
+import { menuCaptions, menuNames, type MenuSlug } from '@/lib/menu';
 
 // トップには Header を出さないので、下層ページだけここで描画する。
 // 下層ページ同士の遷移で Header と背景がスライドしないよう PageTransition の外に置く。
@@ -35,10 +35,14 @@ export function SubPage({
               Container（max-w-[54rem]）の位置を Header とそろえる。100vw - 100% がスクロールバーの幅になる */}
           <main className="py-12 pointer-fine:pl-[min(100vw-100%,max(0px,(100vw-54rem)/2))] max-[681px]:pb-[calc(96px+env(safe-area-inset-bottom,0px))]">
             <Container>
+              {/* 英語の見出しの下には、トップのカードと同じ日本語の説明を添える */}
               {slug && !isDetail && (
-                <h1 className="text-3xl font-bold">
-                  <MenuTitle slug={slug}>{menuNames[slug]}</MenuTitle>
-                </h1>
+                <>
+                  <h1 className="text-3xl font-bold">
+                    <MenuTitle slug={slug}>{menuNames[slug]}</MenuTitle>
+                  </h1>
+                  <p className="mt-2 text-sm font-semibold tracking-[0.2em] text-sky-700">{menuCaptions[slug]}</p>
+                </>
               )}
               {children}
             </Container>

@@ -9,7 +9,7 @@ export const menuNames: Record<MenuSlug, string> = {
   contact: 'Contact',
 };
 
-// トップのカードで、英語のメニュー名に添える日本語
+// トップのカードと下層ページの見出しで、英語のメニュー名に添える日本語
 export const menuCaptions: Record<MenuSlug, string> = {
   about: '私について',
   works: 'Webアプリ・制作物',
