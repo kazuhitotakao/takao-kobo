@@ -51,6 +51,7 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
   // 箇条書きの「・」は一覧の見た目（リストの点）と重なるので外す
   const features = splitLines(work.features).map((line) => line.replace(/^[・•\-*]\s*/, ''));
   const backgroundParagraphs = splitLines(work.background);
+  const roleParagraphs = splitLines(work.role);
 
   return (
     <article className="mt-8">
@@ -66,6 +67,34 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
       </ul>
       <h1 className="mt-3 text-3xl leading-snug font-bold sm:text-4xl">{work.title}</h1>
       {work.summary && <p className="mt-5 leading-loose text-slate-700 sm:text-lg">{work.summary}</p>}
+
+      {(roleParagraphs.length > 0 || technologies.names.length > 0) && (
+        <dl className={`mt-6 grid gap-5 rounded-2xl border border-sky-200 bg-white/80 p-5 sm:p-6 ${roleParagraphs.length > 0 && technologies.names.length > 0 ? 'sm:grid-cols-2' : ''}`}>
+          {roleParagraphs.length > 0 && (
+            <div>
+              <dt className="text-sm font-bold text-sky-900">担当範囲</dt>
+              <dd className="mt-2 space-y-1 text-sm leading-relaxed text-slate-700">
+                {roleParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              </dd>
+            </div>
+          )}
+          {technologies.names.length > 0 && (
+            <div>
+              <dt className="text-sm font-bold text-sky-900">主な使用技術</dt>
+              <dd className="mt-2">
+                <ul className="flex flex-wrap gap-2">
+                  {technologies.names.slice(0, 3).map((name) => (
+                    <li key={name} className="rounded-md bg-sky-50 px-2.5 py-1 text-sm font-medium text-sky-900">{name}</li>
+                  ))}
+                </ul>
+                <a href="#work-technologies" className={`mt-1 inline-flex min-h-11 items-center rounded-sm text-sm font-semibold text-sky-700 underline decoration-sky-300 underline-offset-4 hover:text-sky-600 ${focusRingClassName}`}>
+                  技術の役割を見る
+                </a>
+              </dd>
+            </div>
+          )}
+        </dl>
+      )}
 
       {work.thumbnail && (
         <div className="relative mx-auto mt-10 aspect-video w-full max-w-md overflow-hidden rounded-2xl border border-sky-100 bg-sky-100 shadow-sm">
@@ -102,22 +131,22 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
         </div>
       )}
 
-      {/* 手描きイラストを後から各セクションに差し込めるよう、セクション同士の間は広めにあけておく */}
+      {/* 制作の目的と自分で考えた工夫を先に見せ、機能・技術・補足を続ける */}
       <div className="mt-16 space-y-16 sm:mt-20 sm:space-y-20">
-        {work.description && (
-          <DetailSection title="作品について">
-            {/* リッチエディタの HTML は microCMS の管理画面から自分で書いたものだけなので、そのまま描画する */}
-            <div className="rich-text" dangerouslySetInnerHTML={{ __html: work.description }} />
-          </DetailSection>
-        )}
-
         {backgroundParagraphs.length > 0 && (
-          <DetailSection title="制作の背景">
+          <DetailSection title="制作の目的">
             <div className="space-y-5">
               {backgroundParagraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
+          </DetailSection>
+        )}
+
+        {work.highlights && (
+          <DetailSection title="工夫した点">
+            {/* microCMSの管理画面で入力したHTMLだけを表示する。技術用語には用途や理由を添える */}
+            <div className="rich-text rounded-2xl border border-sky-200 bg-white/80 p-5 sm:p-8" dangerouslySetInnerHTML={{ __html: work.highlights }} />
           </DetailSection>
         )}
 
@@ -132,26 +161,40 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
         )}
 
         {(technologies.names.length > 0 || technologies.notes.length > 0) && (
-          <DetailSection title="使用技術">
-            {technologies.names.length > 0 && (
-              <ul aria-label="使用技術" className="flex flex-wrap gap-2">
-                {technologies.names.map((name) => (
-                  <li
-                    key={name}
-                    className="rounded-md border border-sky-100 bg-white px-3 py-1 text-sm font-medium text-sky-900"
-                  >
-                    {name}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {technologies.notes.length > 0 && (
-              <div className="mt-5 space-y-1 text-sm leading-relaxed text-slate-500">
-                {technologies.notes.map((note) => (
-                  <p key={note}>{note}</p>
-                ))}
-              </div>
-            )}
+          <div id="work-technologies" className="scroll-mt-44 sm:scroll-mt-28">
+            <DetailSection title="使用技術と役割">
+              {technologies.names.length > 0 && (
+                <ul aria-label="使用技術" className="flex flex-wrap gap-2">
+                  {technologies.names.map((name) => (
+                    <li
+                      key={name}
+                      className="rounded-md border border-sky-100 bg-white px-3 py-1 text-sm font-medium text-sky-900"
+                    >
+                      {name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {technologies.notes.length > 0 && (
+                <dl className="mt-6 divide-y divide-sky-100 rounded-xl border border-sky-100 bg-white/70 px-4 sm:px-6">
+                  {technologies.notes.map((note) => {
+                    const separator = note.indexOf('：');
+                    return (
+                      <div key={note} className="grid gap-1 py-4 text-sm leading-relaxed sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-5">
+                        <dt className={separator > 0 ? 'font-semibold text-slate-800' : 'sr-only'}>{separator > 0 ? note.slice(0, separator) : '補足'}</dt>
+                        <dd className={`min-w-0 break-words text-slate-600 ${separator > 0 ? '' : 'sm:col-span-2'}`}>{separator > 0 ? note.slice(separator + 1) : note}</dd>
+                      </div>
+                    );
+                  })}
+                </dl>
+              )}
+            </DetailSection>
+          </div>
+        )}
+
+        {work.description && (
+          <DetailSection title="作品の補足">
+            <div className="rich-text" dangerouslySetInnerHTML={{ __html: work.description }} />
           </DetailSection>
         )}
       </div>
