@@ -4,9 +4,12 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Suspense, type ReactNode } from 'react';
 import { BackLink } from '@/components/back-link';
+import { DraftPreviewBanner } from '@/components/draft-preview-banner';
 import { ExternalLink } from '@/components/external-link';
 import { SubPage } from '@/components/sub-page';
+import { getDraftContent, getDraftKey } from '@/lib/draft';
 import { getWork, getWorks, parseTechnologies, splitLines } from '@/lib/works';
+import type { Work } from '@/types/work';
 
 const focusRingClassName = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500';
 
@@ -19,9 +22,14 @@ export async function generateStaticParams() {
   return works.length > 0 ? works.map((work) => ({ id: work.id })) : [{ id: '__placeholder__' }];
 }
 
-export async function generateMetadata({ params }: PageProps<'/works/[id]'>): Promise<Metadata> {
+// プレビュー中は draftKey で下書きを取り、それ以外はキャッシュした公開作品を使う
+async function getWorkForPage(id: string, draftKey?: string) {
+  return draftKey ? getDraftContent<Work>('works', id, draftKey) : getWork(id);
+}
+
+export async function generateMetadata({ params, searchParams }: PageProps<'/works/[id]'>): Promise<Metadata> {
   const { id } = await params;
-  const work = await getWork(id);
+  const work = await getWorkForPage(id, await getDraftKey(searchParams));
   if (!work) return { title: 'ページが見つかりません', robots: { index: false } };
   return createPageMetadata({
     title: work.title,
@@ -40,9 +48,10 @@ function DetailSection({ title, children }: { title: string; children: ReactNode
   );
 }
 
-async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params'] }) {
+async function WorkDetail({ params, searchParams }: PageProps<'/works/[id]'>) {
   const { id } = await params;
-  const work = await getWork(id);
+  const draftKey = await getDraftKey(searchParams);
+  const work = await getWorkForPage(id, draftKey);
   if (!work) {
     notFound();
   }
@@ -55,6 +64,7 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
 
   return (
     <article className="mt-8">
+      {draftKey && <DraftPreviewBanner backHref="/works" />}
       <ul aria-label="区分" className="flex flex-wrap gap-2">
         {work.category.map((category) => (
           <li
@@ -221,12 +231,12 @@ function WorkDetailFallback() {
 }
 
 // Header と一覧へ戻るリンクは作品によらないので、params を読む本文だけを Suspense に入れて先に枠を出せるようにする
-export default function WorkDetailPage({ params }: PageProps<'/works/[id]'>) {
+export default function WorkDetailPage({ params, searchParams }: PageProps<'/works/[id]'>) {
   return (
     <SubPage slug="works" isDetail>
       <BackLink href="/works" restoreScroll>Works一覧へ戻る</BackLink>
       <Suspense fallback={<WorkDetailFallback />}>
-        <WorkDetail params={params} />
+        <WorkDetail params={params} searchParams={searchParams} />
       </Suspense>
     </SubPage>
   );

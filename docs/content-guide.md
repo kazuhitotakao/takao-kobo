@@ -87,6 +87,28 @@ APIのエンドポイントは `blogs`、APIの形式はリスト形式です。
 
 表示の実装は [ブログ一覧](../src/app/blog/page.tsx)、[記事詳細](../src/app/blog/[id]/page.tsx) を参照してください。
 
+## 下書きのプレビュー
+
+公開前の作品・記事や、公開済みの内容を書き換えた下書きは、microCMSの編集画面の「画面プレビュー」ボタンから、実際の詳細ページの見た目で確認できます。
+
+### 設定
+
+1. 推測されにくい文字列（例：`openssl rand -hex 32` の結果）を用意し、`MICROCMS_PREVIEW_SECRET` としてVercelの環境変数と手元の `.env.local` に設定します。Vercelでは設定後に再デプロイすると反映されます。
+2. microCMSの `blogs` と `works` それぞれで「API設定 → 画面プレビュー」を開き、遷移先URLを入力して「画面プレビューボタンを表示」をONにして保存します。`<secret>` は1で用意した文字列に置き換えます。
+
+| API | 遷移先URL |
+| --- | --- |
+| `blogs` | `https://takao-kobo.vercel.app/api/draft?secret=<secret>&endpoint=blogs&id={CONTENT_ID}&draftKey={DRAFT_KEY}` |
+| `works` | `https://takao-kobo.vercel.app/api/draft?secret=<secret>&endpoint=works&id={CONTENT_ID}&draftKey={DRAFT_KEY}` |
+
+### プレビュー中の表示
+
+ボタンを押すと、secretが合い、draftKeyで下書きを取得できたときだけプレビューが始まり、詳細ページへ移動します。プレビュー中はキャッシュを使わずに最新の下書きを表示し、本文の上に「下書きをプレビューしています」と表示されます。
+
+「プレビューを終了」を押すか、ブラウザを閉じると通常の表示に戻ります。プレビューは開いた人のブラウザだけで有効になり、ほかの人の表示には影響しません。
+
+実装は [プレビューの入口](../src/app/api/draft/route.ts)、[下書きの取得](../src/lib/draft.ts) を参照してください。
+
 ## 固定ページの更新
 
 About me・Contact・トップページの紹介文は、microCMSではなくコード内にあります。編集する場所は [README](../README.md#内容を更新するには) にまとめています。
