@@ -49,7 +49,7 @@ Webエンジニアとして制作したものと、日々の学びや暮らし�
 | お問い合わせ先 | `src/app/contact/page.tsx` |
 | トップページの説明・メニュー | `src/app/page.tsx` / `src/lib/menu.ts` |
 
-作品紹介の書き分けや入力形式は、[コンテンツ更新ガイド](docs/content-guide.md)にまとめています。
+作品紹介の書き分けや入力形式、公開前の下書きをプレビューする設定は、[コンテンツ更新ガイド](docs/content-guide.md)にまとめています。
 
 ## 手元で動かすには
 
@@ -69,6 +69,8 @@ cd takao-kobo
 ```dotenv
 MICROCMS_SERVICE_DOMAIN=サービスドメイン
 MICROCMS_API_KEY=APIキー
+# 下書きのプレビューを使う場合だけ設定します（コンテンツ更新ガイドの「下書きのプレビュー」を参照）
+MICROCMS_PREVIEW_SECRET=推測されにくい文字列
 ```
 
 ### 3. 起動
