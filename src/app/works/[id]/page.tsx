@@ -68,12 +68,12 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
       {work.summary && <p className="mt-5 leading-loose text-slate-700 sm:text-lg">{work.summary}</p>}
 
       {work.thumbnail && (
-        <div className="relative mt-10 aspect-video overflow-hidden rounded-2xl border border-sky-100 bg-sky-100 shadow-sm">
+        <div className="relative mx-auto mt-10 aspect-video w-full max-w-md overflow-hidden rounded-2xl border border-sky-100 bg-sky-100 shadow-sm">
           <Image
             src={work.thumbnail.url}
             alt={work.thumbnail.alt ?? ''}
             fill
-            sizes="(min-width: 864px) 800px, 100vw"
+            sizes="(min-width: 488px) 448px, calc(100vw - 40px)"
             loading="eager"
             fetchPriority="high"
             className="object-cover"
@@ -82,7 +82,7 @@ async function WorkDetail({ params }: { params: PageProps<'/works/[id]'>['params
       )}
 
       {(work.demoUrl || work.githubUrl) && (
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           {work.demoUrl && (
             <ExternalLink
               href={work.demoUrl}
@@ -172,7 +172,7 @@ function WorkDetailFallback() {
       <div className="mt-4 h-9 w-2/3 rounded-md bg-sky-100" />
       <div className="mt-6 h-4 w-full rounded bg-sky-100" />
       <div className="mt-3 h-4 w-5/6 rounded bg-sky-100" />
-      <div className="mt-10 aspect-video rounded-2xl bg-sky-100" />
+      <div className="mx-auto mt-10 aspect-video w-full max-w-md rounded-2xl bg-sky-100" />
     </div>
   );
 }
