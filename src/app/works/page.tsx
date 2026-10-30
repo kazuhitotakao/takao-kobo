@@ -26,11 +26,6 @@ export default async function WorksPage() {
 
   return (
     <SubPage slug="works">
-      <p className="mt-2 text-sm font-semibold tracking-[0.2em] text-sky-700">つくってきたもの</p>
-      <p className="mt-6 leading-loose text-slate-700 sm:text-lg">
-        一歩ずつ学びながら、制作してきたアプリや作品を紹介しています。
-      </p>
-
       {/* 手描きイラストを後から差し込めるよう、セクション同士の間は広めにあけておく */}
       {personalWorks.length > 0 || learningWorks.length > 0 ? (
         <div className="mt-12 divide-y divide-sky-300 sm:mt-14">
