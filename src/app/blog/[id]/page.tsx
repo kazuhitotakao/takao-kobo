@@ -6,9 +6,12 @@ import { Suspense } from 'react';
 import { BackLink } from '@/components/back-link';
 import { BlogCategories } from '@/components/blog-categories';
 import { BlogBackLink } from '@/components/blog-back-link';
+import { DraftPreviewBanner } from '@/components/draft-preview-banner';
 import { ShowEndWhenTall } from '@/components/show-end-when-tall';
 import { SubPage } from '@/components/sub-page';
 import { formatDate, getBlogArticle, getBlogArticleIds } from '@/lib/blog';
+import { getDraftContent, getDraftKey } from '@/lib/draft';
+import type { BlogArticle } from '@/types/blog';
 
 // 公開時に存在する記事はビルドで静的に生成する。あとから増えた記事は初回アクセス時に生成される。
 // Cache Components では空配列だとビルドエラーになるので、記事が0件のときは存在しない id を渡して 404 にする
@@ -17,9 +20,14 @@ export async function generateStaticParams() {
   return ids.length > 0 ? ids.map((id) => ({ id })) : [{ id: '__placeholder__' }];
 }
 
-export async function generateMetadata({ params }: PageProps<'/blog/[id]'>): Promise<Metadata> {
+// プレビュー中は draftKey で下書きを取り、それ以外はキャッシュした公開記事を使う
+async function getArticle(id: string, draftKey?: string) {
+  return draftKey ? getDraftContent<BlogArticle>('blogs', id, draftKey) : getBlogArticle(id);
+}
+
+export async function generateMetadata({ params, searchParams }: PageProps<'/blog/[id]'>): Promise<Metadata> {
   const { id } = await params;
-  const article = await getBlogArticle(id);
+  const article = await getArticle(id, await getDraftKey(searchParams));
   if (!article) return { title: 'ページが見つかりません', robots: { index: false } };
   return createPageMetadata({
     title: article.title,
@@ -31,9 +39,10 @@ export async function generateMetadata({ params }: PageProps<'/blog/[id]'>): Pro
   });
 }
 
-async function BlogArticleDetail({ params }: { params: PageProps<'/blog/[id]'>['params'] }) {
+async function BlogArticleDetail({ params, searchParams }: PageProps<'/blog/[id]'>) {
   const { id } = await params;
-  const article = await getBlogArticle(id);
+  const draftKey = await getDraftKey(searchParams);
+  const article = await getArticle(id, draftKey);
   if (!article) {
     notFound();
   }
@@ -42,6 +51,7 @@ async function BlogArticleDetail({ params }: { params: PageProps<'/blog/[id]'>['
 
   return (
     <article className="mt-8">
+      {draftKey && <DraftPreviewBanner backHref="/blog" />}
       {/* 短い記事だと上下の「一覧へ戻る」が並んでしまうので、記事が画面より長いときだけ下にも出す */}
       <ShowEndWhenTall
         end={
@@ -97,12 +107,12 @@ function BlogArticleFallback() {
 }
 
 // Header と一覧へ戻るリンクは記事によらないので、params を読む本文だけを Suspense に入れて先に枠を出せるようにする
-export default function BlogArticlePage({ params }: PageProps<'/blog/[id]'>) {
+export default function BlogArticlePage({ params, searchParams }: PageProps<'/blog/[id]'>) {
   return (
     <SubPage slug="blog" isDetail>
       <Suspense fallback={<BackLink href="/blog" restoreScroll>Blog一覧へ戻る</BackLink>}><BlogBackLink /></Suspense>
       <Suspense fallback={<BlogArticleFallback />}>
-        <BlogArticleDetail params={params} />
+        <BlogArticleDetail params={params} searchParams={searchParams} />
       </Suspense>
     </SubPage>
   );
