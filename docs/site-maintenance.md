@@ -8,6 +8,7 @@
 - GitHub Actionsで、コードの書き方・型・公開用ビルドをチェックします。ビルドには `MICROCMS_SERVICE_DOMAIN` と `MICROCMS_API_KEY` のGitHub Secretsが必要です。
 - `develop` 向けPRの自動マージには、`automerge` ラベルとリポジトリ変数 `ENABLE_AUTO_MERGE=true` が必要です。同じリポジトリの `kazuhitotakao` が作成した、DraftではないPRが対象です。
 - VercelへのGit連携デプロイは `main` のみ有効です。`develop` に統合した変更は、`main` へのPRをマージして本番へ反映します。
+- Vercelのサーバー処理は東京リージョン（`vercel.json` の `regions: ["hnd1"]`）で動かします。既定の米国東部だと、日本からのページ移動でCDNにないデータを取りに行くときや、microCMSへの問い合わせのたびに太平洋を往復して遅くなるためです。
 - microCMSのサービスを変更するときは、接続情報に加え、`next.config.ts` の画像取得先も確認してください。
 
 設定ファイル：[CI](../.github/workflows/ci.yml) / [Vercel](../vercel.json) / [Next.js](../next.config.ts)
