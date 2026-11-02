@@ -6,7 +6,9 @@ import { SubPageScrollArea } from '@/components/sub-page-scroll-area';
 import { menuCaptions, menuNames, type MenuSlug } from '@/lib/menu';
 
 // トップには Header を出さないので、下層ページだけここで描画する。
-// 下層ページ同士の遷移で Header と背景がスライドしないよう PageTransition の外に置く。
+// PageTransition はページのいちばん外側で包む。DOM 要素の内側に置くと、React が出入りのアニメーションを付けない。
+// Header は view-transition-name で切り離しているので、ページと一緒にはスライドしない。
+// 背景は本文と一緒に動くが、後ろに見える body の背景がほぼ同じ色なので目立たない。
 // 作品詳細のような一覧の下のページ（isDetail）では、メニュー名の見出しを出さず、h1 は children 側で描画する。
 // 404 やエラーのようにどのメニューにも属さないページは slug を渡さず、h1 は children 側で描画する。
 // マウスで操作する画面（pointer: fine）では、画面の高さに収めて Header の下の本文だけをスクロールさせ、
@@ -27,10 +29,10 @@ export function SubPage({
   children: ReactNode;
 }) {
   return (
-    <div className="flex min-h-dvh flex-col pointer-fine:h-dvh">
-      <Header currentSlug={slug} isDetail={isDetail} />
-      <SubPageScrollArea className="site-page-background flex-1 pointer-fine:min-h-0 pointer-fine:overflow-y-auto pointer-fine:scrollbar-gutter-stable">
-        <PageTransition>
+    <PageTransition>
+      <div className="flex min-h-dvh flex-col pointer-fine:h-dvh">
+        <Header currentSlug={slug} isDetail={isDetail} />
+        <SubPageScrollArea className="site-page-background flex-1 pointer-fine:min-h-0 pointer-fine:overflow-y-auto pointer-fine:scrollbar-gutter-stable">
           {/* 本文は右にスクロールバーの幅が空くので、左にも同じだけ（画面が狭くて余白が足りなければその分だけ）あけて、
               Container（max-w-[54rem]）の位置を Header とそろえる。100vw - 100% がスクロールバーの幅になる */}
           <main className="py-12 pointer-fine:pl-[min(100vw-100%,max(0px,(100vw-54rem)/2))] max-[681px]:pb-[calc(96px+env(safe-area-inset-bottom,0px))]">
@@ -47,8 +49,8 @@ export function SubPage({
               {children}
             </Container>
           </main>
-        </PageTransition>
-      </SubPageScrollArea>
-    </div>
+        </SubPageScrollArea>
+      </div>
+    </PageTransition>
   );
 }
