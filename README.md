@@ -79,7 +79,7 @@ MICROCMS_PREVIEW_SECRET=推測されにくい文字列
 docker compose up --build
 ```
 
-起動時に必要なパッケージが入り、開発サーバーが立ち上がります。[http://localhost:3000](http://localhost:3000)を開いてください。停止は `Ctrl+C` です。
+起動時に必要なパッケージが入り、開発サーバーが立ち上がります。[http://localhost:3002](http://localhost:3002)を開いてください。停止は `Ctrl+C` です。
 
 VS Codeでは、Dev Containers拡張機能の「Reopen in Container」からも同じ環境を起動できます。
 

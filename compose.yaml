@@ -17,7 +17,7 @@ services:
       - claude_config:/root/.claude
 
     ports:
-      - "3000:3000"
+      - "3002:3000"
 
     command: sh -c "npm ci && npm run dev -- --hostname 0.0.0.0"
 
