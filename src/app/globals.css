@@ -181,35 +181,19 @@ body {
   }
 }
 
-/* スマホ（トップが1列になる 680px 以下）では、縦に長い画面でページやタイトルが大きく動くと落ち着かないので、
-   ページは位置を動かさずにフェードだけで切り替える。タイトルも移動させず、前のページと一緒に消えて、
-   次のページと一緒に出る（消え終わった瞬間に、タイトルの位置を次のページのほうへ切りかえる） */
-@media (max-width: 680px) {
-  ::view-transition-old(.nav-forward),
-  ::view-transition-old(.nav-back),
-  ::view-transition-old(.morph) {
-    animation: 150ms ease-in both fade reverse;
-  }
-  ::view-transition-new(.nav-forward),
-  ::view-transition-new(.nav-back),
-  ::view-transition-new(.morph) {
-    animation: 210ms ease-out 150ms both fade;
-  }
-  ::view-transition-group(.morph) {
-    animation-duration: 0s;
-    animation-delay: 150ms;
-  }
-  ::view-transition-image-pair(.morph) {
-    animation: none;
-  }
-}
-
-/* 動きを減らす設定では、ページ遷移のアニメーションを付けず、ふつうのページ移動のようにすぐ切り替える */
-@media (prefers-reduced-motion: reduce) {
+/* 動きを減らす設定と、スマホ（トップが1列になる 680px 以下）では、ページ遷移のアニメーションを付けず、
+   ふつうのページ移動のようにすぐ切り替える */
+@media (prefers-reduced-motion: reduce), (max-width: 680px) {
   ::view-transition-old(*),
   ::view-transition-new(*),
   ::view-transition-group(*) {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
+  }
+}
+/* ヘッダーの丸枠が滑るのは小さな動きなので、スマホでも動かす（動きを減らす設定のときは動かさない） */
+@media (prefers-reduced-motion: no-preference) and (max-width: 680px) {
+  ::view-transition-group(.nav-indicator) {
+    animation-duration: 350ms !important;
   }
 }
