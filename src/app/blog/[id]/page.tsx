@@ -1,15 +1,17 @@
-import { createPageMetadata } from '@/lib/metadata';
+import { createPageMetadata, siteName, siteUrl } from '@/lib/metadata';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { BackLink } from '@/components/back-link';
+import { AdjacentArticleLinks, BlogAdjacentLinks } from '@/components/blog-adjacent-links';
 import { BlogCategories } from '@/components/blog-categories';
 import { BlogBackLink } from '@/components/blog-back-link';
 import { DraftPreviewBanner } from '@/components/draft-preview-banner';
+import { JsonLd } from '@/components/json-ld';
 import { ShowEndWhenTall } from '@/components/show-end-when-tall';
 import { SubPage } from '@/components/sub-page';
-import { formatDate, getBlogArticle, getBlogArticleIds } from '@/lib/blog';
+import { formatDate, getAdjacentBlogArticles, getBlogArticle, getBlogArticleIds } from '@/lib/blog';
 import { getDraftContent, getDraftKey } from '@/lib/draft';
 import type { BlogArticle } from '@/types/blog';
 
@@ -42,15 +44,26 @@ export async function generateMetadata({ params, searchParams }: PageProps<'/blo
 async function BlogArticleDetail({ params, searchParams }: PageProps<'/blog/[id]'>) {
   const { id } = await params;
   const draftKey = await getDraftKey(searchParams);
-  const article = await getArticle(id, draftKey);
+  const [article, adjacent] = await Promise.all([getArticle(id, draftKey), getAdjacentBlogArticles(id)]);
   if (!article) {
     notFound();
   }
 
   const publishedAt = article.publishedAt ?? article.createdAt;
+  // 公開日・更新日・サムネイル・書いた人を Google に伝える。書いた人は About me で紹介している工房の名前にする
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: article.title,
+    datePublished: publishedAt,
+    dateModified: article.updatedAt,
+    ...(article.thumbnail ? { image: [article.thumbnail.url] } : {}),
+    author: { '@type': 'Person', name: siteName, url: new URL('/about', siteUrl).href },
+  };
 
   return (
     <article className="mt-8">
+      <JsonLd data={articleJsonLd} />
       {draftKey && <DraftPreviewBanner backHref="/blog" />}
       {/* 短い記事だと上下の「一覧へ戻る」が並んでしまうので、記事が画面より長いときだけ下にも出す */}
       <ShowEndWhenTall
@@ -87,6 +100,9 @@ async function BlogArticleDetail({ params, searchParams }: PageProps<'/blog/[id]
           className="rich-text mt-10 leading-loose text-slate-700 sm:mt-12 sm:text-lg"
           dangerouslySetInnerHTML={{ __html: article.body }}
         />
+        <Suspense fallback={<AdjacentArticleLinks {...adjacent.all} />}>
+          <BlogAdjacentLinks all={adjacent.all} byCategory={adjacent.byCategory} />
+        </Suspense>
       </ShowEndWhenTall>
     </article>
   );

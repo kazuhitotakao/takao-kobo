@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 export const siteUrl = new URL('https://takao-kobo.vercel.app/');
 export const siteName = '髙尾工房';
+// 旧字の「髙」を打たずに「高尾工房」やローマ字で探されても、同じサイトだと伝わるようにする別名
+export const siteAlternateNames = ['高尾工房', 'TAKAO KOBO'];
 export const siteDescription = '一歩ずつ、つくっていく。つくること、暮らすことを記録する小さな工房。';
 
 // titleはページ固有の名前。サイト名は共通レイアウトのtemplateで付ける。
