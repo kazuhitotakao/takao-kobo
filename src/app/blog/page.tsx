@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { BlogCategories } from '@/components/blog-categories';
 import { SubPage } from '@/components/sub-page';
 import { BLOG_PAGE_SIZE, formatDate, getBlogArticles, getBlogCategories } from '@/lib/blog';
-import { blogListHref, parseBlogPage } from '@/lib/blog-navigation';
+import { blogArticleHref, blogListHref, parseBlogPage } from '@/lib/blog-navigation';
 
 async function resolveBlogQuery(searchParams: PageProps<'/blog'>['searchParams']) {
   const [query, categories] = await Promise.all([searchParams, getBlogCategories()]);
@@ -31,7 +31,6 @@ async function BlogList({ searchParams }: { searchParams: PageProps<'/blog'>['se
   const pageCount = Math.max(1, Math.ceil(totalCount / BLOG_PAGE_SIZE));
   if (page > pageCount) redirect(blogListHref(pageCount, category));
   const listHref = blogListHref(page, category);
-  const detailSearch = listHref.includes('?') ? listHref.slice(listHref.indexOf('?')) : '';
   const pageNumbers = [...new Set([1, page - 1, page, page + 1, pageCount])]
     .filter((number) => number >= 1 && number <= pageCount).sort((a, b) => a - b);
 
@@ -56,7 +55,7 @@ async function BlogList({ searchParams }: { searchParams: PageProps<'/blog'>['se
               <li key={article.id}>
                 {/* 既定の prefetch は詳細ページの枠だけなので、本文まで先読みして遷移直後に読み込み表示を出さない */}
                 <Link
-                  href={`/blog/${article.id}${detailSearch}`}
+                  href={blogArticleHref(article.id, page, category)}
                   prefetch={true}
                   transitionTypes={['nav-forward']}
                   className="group block rounded-xl border border-sky-100 bg-white p-5 shadow-sm transition duration-200 hover:border-sky-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 motion-reduce:transition-none sm:p-6"
