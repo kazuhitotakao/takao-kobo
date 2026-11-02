@@ -8,6 +8,7 @@ import { DraftPreviewBanner } from '@/components/draft-preview-banner';
 import { ExternalLink } from '@/components/external-link';
 import { SubPage } from '@/components/sub-page';
 import { getDraftContent, getDraftKey } from '@/lib/draft';
+import { optimizeRichTextImages } from '@/lib/rich-text';
 import { getWork, getWorks, parseTechnologies, splitLines } from '@/lib/works';
 import type { Work } from '@/types/work';
 
@@ -56,6 +57,10 @@ async function WorkDetail({ params, searchParams }: PageProps<'/works/[id]'>) {
     notFound();
   }
 
+  const [highlights, description] = await Promise.all([
+    work.highlights && optimizeRichTextImages(work.highlights),
+    work.description && optimizeRichTextImages(work.description),
+  ]);
   const technologies = parseTechnologies(work.technologies);
   // 箇条書きの「・」は一覧の見た目（リストの点）と重なるので外す
   const features = splitLines(work.features).map((line) => line.replace(/^[・•\-*]\s*/, ''));
@@ -153,10 +158,10 @@ async function WorkDetail({ params, searchParams }: PageProps<'/works/[id]'>) {
           </DetailSection>
         )}
 
-        {work.highlights && (
+        {highlights && (
           <DetailSection title="工夫した点">
             {/* microCMSの管理画面で入力したHTMLだけを表示する。技術用語には用途や理由を添える */}
-            <div className="rich-text rounded-2xl border border-sky-200 bg-white/80 p-5 sm:p-8" dangerouslySetInnerHTML={{ __html: work.highlights }} />
+            <div className="rich-text rounded-2xl border border-sky-200 bg-white/80 p-5 sm:p-8" dangerouslySetInnerHTML={{ __html: highlights }} />
           </DetailSection>
         )}
 
@@ -202,9 +207,9 @@ async function WorkDetail({ params, searchParams }: PageProps<'/works/[id]'>) {
           </div>
         )}
 
-        {work.description && (
+        {description && (
           <DetailSection title="作品の補足">
-            <div className="rich-text" dangerouslySetInnerHTML={{ __html: work.description }} />
+            <div className="rich-text" dangerouslySetInnerHTML={{ __html: description }} />
           </DetailSection>
         )}
       </div>

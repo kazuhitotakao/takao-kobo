@@ -13,6 +13,7 @@ import { ShowEndWhenTall } from '@/components/show-end-when-tall';
 import { SubPage } from '@/components/sub-page';
 import { formatDate, getAdjacentBlogArticles, getBlogArticle, getBlogArticleIds } from '@/lib/blog';
 import { getDraftContent, getDraftKey } from '@/lib/draft';
+import { optimizeRichTextImages } from '@/lib/rich-text';
 import type { BlogArticle } from '@/types/blog';
 
 // 公開時に存在する記事はビルドで静的に生成する。あとから増えた記事は初回アクセス時に生成される。
@@ -50,6 +51,7 @@ async function BlogArticleDetail({ params, searchParams }: PageProps<'/blog/[id]
   }
 
   const publishedAt = article.publishedAt ?? article.createdAt;
+  const body = await optimizeRichTextImages(article.body);
   // 公開日・更新日・サムネイル・書いた人を Google に伝える。書いた人は About me で紹介している工房の名前にする
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -95,10 +97,10 @@ async function BlogArticleDetail({ params, searchParams }: PageProps<'/blog/[id]
           </div>
         )}
 
-        {/* リッチエディタの HTML は microCMS の管理画面から自分で書いたものだけなので、そのまま描画する */}
+        {/* リッチエディタの HTML は microCMS の管理画面から自分で書いたものだけなので、画像の大きさを整えるほかはそのまま描画する */}
         <div
           className="rich-text mt-10 leading-loose text-slate-700 sm:mt-12 sm:text-lg"
-          dangerouslySetInnerHTML={{ __html: article.body }}
+          dangerouslySetInnerHTML={{ __html: body }}
         />
         <Suspense fallback={<AdjacentArticleLinks {...adjacent.all} />}>
           <BlogAdjacentLinks all={adjacent.all} byCategory={adjacent.byCategory} />
