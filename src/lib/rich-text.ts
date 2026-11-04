@@ -6,6 +6,9 @@ const contentMaxWidth = 800;
 
 const imgTagPattern = /<img\b[^>]*>/gi;
 
+// リッチエディタでファイルとして添付したもの。段落にそれだけが入っているときは、前後の <p> も一緒に取る
+const fileEmbedPattern = /(<p>)?(<a\b[^>]*\sdata-embed-type="file"[^>]*>)[\s\S]*?<\/a>(<\/p>)?/gi;
+
 // microCMS に保存した画像の、向きを反映した幅と高さ。
 // スマホの写真は横長のまま保存し、向きの情報（EXIF の Orientation）で縦に見せていることがあるので、
 // 画像 API のメタデータ（fm=json）から向きも読んで縦横を決める。同じ URL の画像は変わらないので長くキャッシュする。
@@ -58,12 +61,28 @@ async function optimizeImageTag(tag: string) {
   return tag.replace(/\s(?:src|srcset|width|height)="[^"]*"/gi, '').replace(/^<img/i, `<img ${attributes}`);
 }
 
+// microCMS のリッチエディタでは、画像もファイルとして添付すると
+// <p><a href="…/写真.png" target="_blank" data-embed-type="file" data-mime-type="image/png">写真.png</a></p>
+// のようなファイル名のリンクになり、画像が表示されない。
+// 画像のファイルは、エディタで画像として挿入したときと同じ <figure><img></figure> に置き換えて表示する
+function embedImageFiles(html: string) {
+  return html.replace(fileEmbedPattern, (embed, openP = '', linkTag: string, closeP = '') => {
+    const href = getAttribute(linkTag, 'href');
+    if (!href || !getAttribute(linkTag, 'data-mime-type')?.startsWith('image/')) {
+      return embed;
+    }
+    const img = `<img src="${href}" alt="">`;
+    return openP && closeP ? `<figure>${img}</figure>` : `${openP}${img}${closeP}`;
+  });
+}
+
 // microCMS のリッチエディタで挿入した画像が、ぼやけずに表示されるよう書き換える。
 // エディタで縮小すると、URL に ?w=200&h=150 のような大きさが付き、その大きさちょうどの画像しか届かない。
 // そのため高精細な画面ではぼやけ、縦向きの写真は縦横を取り違えてさらに小さくなる。
 // そこで表示する幅だけを指定し直し、高精細な画面向けに 2 倍の大きさの画像を srcset で用意する。
 // 幅と高さの属性も実際の縦横比に合わせて直し、読み込みの前後で本文がずれないようにする
-export async function optimizeRichTextImages(html: string) {
+export async function optimizeRichTextImages(richText: string) {
+  const html = embedImageFiles(richText);
   const tags = html.match(imgTagPattern) ?? [];
   const optimizedTags = await Promise.all(tags.map(optimizeImageTag));
   let index = 0;
