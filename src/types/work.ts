@@ -19,6 +19,8 @@ export type Work = {
   background?: string;
   thumbnail?: MicroCMSImage;
   demoUrl?: string;
+  // demoUrl へのボタンの文言（例：ゲームで遊ぶ）。未入力なら「公開サイトを見る」
+  demoLabel?: string;
   githubUrl?: string;
   displayOrder?: number;
 } & MicroCMSListContent;
