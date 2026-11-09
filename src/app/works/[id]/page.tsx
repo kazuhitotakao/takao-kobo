@@ -9,7 +9,7 @@ import { ExternalLink } from '@/components/external-link';
 import { SubPage } from '@/components/sub-page';
 import { getDraftContent, getDraftKey } from '@/lib/draft';
 import { optimizeRichTextImages } from '@/lib/rich-text';
-import { getWork, getWorks, parseTechnologies, splitLines } from '@/lib/works';
+import { getDemoLabel, getWork, getWorks, parseTechnologies, splitLines } from '@/lib/works';
 import type { Work } from '@/types/work';
 
 const focusRingClassName = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500';
@@ -132,7 +132,7 @@ async function WorkDetail({ params, searchParams }: PageProps<'/works/[id]'>) {
               href={work.demoUrl}
               className={`${pillClassName} border-sky-200 bg-sky-100 text-sky-900 hover:border-sky-300 hover:bg-sky-200`}
             >
-              公開サイトを見る
+              {getDemoLabel(work)}
             </ExternalLink>
           )}
           {work.githubUrl && (

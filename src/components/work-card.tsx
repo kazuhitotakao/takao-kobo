@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ExternalLink } from '@/components/external-link';
-import { parseTechnologies } from '@/lib/works';
+import { getDemoLabel, parseTechnologies } from '@/lib/works';
 import type { Work } from '@/types/work';
 
 // カードに並べる技術名の上限。残りは詳細ページで見せる
@@ -161,7 +161,7 @@ export function WorkCard({ work, variant, detailHref, aboveTheFold = false }: Wo
                       : `relative z-10 inline-flex items-center gap-1 rounded-sm font-semibold text-sky-800 transition-colors hover:text-sky-600 ${focusRingClassName}`
                   }
                 >
-                  公開サイトを見る
+                  {getDemoLabel(work)}
                 </ExternalLink>
               )}
             </div>

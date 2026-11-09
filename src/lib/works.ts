@@ -23,6 +23,11 @@ export async function getWork(id: string): Promise<Work | undefined> {
   return works.find((work) => work.id === id);
 }
 
+// demoUrl へのボタンの文言。作品の種類（ゲーム・Webサービスなど）に合わせて microCMS で変えられるようにする
+export function getDemoLabel(work: Pick<Work, 'demoLabel'>): string {
+  return work.demoLabel?.trim() || '公開サイトを見る';
+}
+
 // テキストエリアの値を、空行を除いた1行ずつの配列にする
 export function splitLines(text?: string): string[] {
   return (text ?? '')
