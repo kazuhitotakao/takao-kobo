@@ -28,6 +28,7 @@ export default function ContactPage() {
           <>
             <a
               href={`mailto:${contactEmail}?subject=${encodeURIComponent(contactSubject)}`}
+              aria-describedby="contact-mail-note"
               className="mt-10 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-100 px-8 py-3 font-semibold text-sky-900 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-200 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <svg
@@ -45,6 +46,9 @@ export default function ContactPage() {
               </svg>
               メールを送る
             </a>
+            <p id="contact-mail-note" className="mt-3 text-sm leading-relaxed text-slate-500">
+              お使いのメールアプリが開きます
+            </p>
             {/* メールアプリを設定していない PC ではボタンを押しても開かないので、コピーできるようアドレスも出す */}
             <p className="mt-6 text-sm leading-relaxed text-balance text-slate-500">
               メールアプリが開かない場合は、こちらへお送りください。
