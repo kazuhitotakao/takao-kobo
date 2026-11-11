@@ -45,6 +45,11 @@ body {
 .rich-text > * + * {
   @apply mt-5;
 }
+/* エディタで Enter を2回押した空行は中身のない <p></p> になり、高さ0で前後の余白と重なって消えてしまう。
+   1行分の高さを持たせて、書いたとおりの空きとして見せる */
+.rich-text > p:empty {
+  height: 1lh;
+}
 .rich-text :is(h1, h2, h3, h4, h5) {
   @apply mt-10 font-bold text-foreground;
 }
